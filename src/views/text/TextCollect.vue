@@ -3,7 +3,7 @@
        <div class="collect-container" v-for="item in COLLECTION_LIST" :key="item.id">
            <div class="title">
             <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片 -->
-                <img src="../assets/images/logo.png" alt="">
+                <img src="../../assets/images/logo.png" alt="">
                 <div>{{ item.title }}</div>
            </div>
            <div class="divider"></div>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { COLLECTION_LIST } from '../content/index'
+import { COLLECTION_LIST } from '@/content/index'
 import { ElMessage } from 'element-plus';
 
 const handleCopy = (text: string) => {

@@ -37,7 +37,7 @@ const clickMenu = (type: string) => {
     if (activeMenu.value === type )  return 
     activeMenu.value = type;
     if(activeMenu.value === 'text') router.push('/ai_text')
-    if(activeMenu.value === 'picture') router.push('/ai_picture')
+    if(activeMenu.value === 'picture') router.push('/ai_picture/create')
     if(activeMenu.value === 'file') router.push('/ai_file')
 }
 

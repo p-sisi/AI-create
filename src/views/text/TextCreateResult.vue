@@ -14,7 +14,7 @@
                 :key="item.id">
                 <div class="dialogue-question">
                     <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
-                    <img src="../assets/images/logo.png" alt="">
+                    <img src="../../assets/images/logo.png" alt="">
                     <div>{{ item.tempTitle }}</div>
                 </div>
                 <div class="dialogue-answer">{{ item.answer }}</div>
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
-import { RESULT } from '../content'
+import { RESULT } from '@/content'
 
 //复制
 const handleCopy = (text: string) => {

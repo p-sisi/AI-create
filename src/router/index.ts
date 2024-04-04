@@ -10,32 +10,32 @@ const routes = [
     {
         name: 'text',   
         path: '/ai_text',  
-        component: () => import('../views/Text.vue')  
+        component: () => import('../views/text/Text.vue')  
     },{
         name: 'picture',   
         path: '/ai_picture/',  
-        component: () => import('../views/Picture.vue'),
+        component: () => import('../views/picture/Picture.vue'),
         children: [
             {
                 name: 'picture_create',
                 path: '/ai_picture/create',
-                component: () => import('../views/PictureCreate.vue')
+                component: () => import('../views/picture/PictureCreate.vue')
             },
             {
                 name: 'picture_collect',
                 path: '/ai_picture/collect',
-                component: () => import('../views/PictureCollect.vue')
+                component: () => import('../views/picture/PictureCollect.vue')
             },
             {
                 name: 'picture_star',
                 path: '/ai_picture/star',
-                component: () => import('../views/PictureStar.vue')
+                component: () => import('../views/picture/PictureStar.vue')
             }
         ]
     },{
         name: 'file',   
         path: '/ai_file',  
-        component: () => import('../views/File.vue')  
+        component: () => import('../views/file/File.vue')  
     },
     {
         path: '/',

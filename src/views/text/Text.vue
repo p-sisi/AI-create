@@ -6,7 +6,7 @@
                 <div class="back-to">
                     <span class="iconfont icon-fanhui" @click="handleBackToHome"></span>
                 </div>
-                <img src="../assets/images/logo.png" alt="" class="header-logo">
+                <img src="../../assets/images/logo.png" alt="" class="header-logo">
                 <div class="header-title">智能笔墨</div>
                 <div class="header-menu">
                     <div 
@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import router from '../router/index.ts';
+import router from '@/router/index.ts';
 import TextTemp from './TextTemp.vue';
 import TextCreateResult from './TextCreateResult.vue';
 import TextCollect from './TextCollect.vue';

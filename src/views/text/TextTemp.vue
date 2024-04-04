@@ -115,7 +115,7 @@
 import { ref, onMounted } from 'vue';
 import { useFormDataStore } from '@/store';
 import { ArrowRight, Loading } from '@element-plus/icons-vue'    
-import { CREATION_TEMPLATE } from '../content/createTemp'
+import { CREATION_TEMPLATE } from '@/content/createTemp'
 import type { FormInstance, FormRules } from 'element-plus'
 
 const formDataStore = useFormDataStore()

@@ -6,7 +6,7 @@
                 <div class="back-to">
                     <span class="iconfont icon-fanhui" @click="handleBackToHome"></span>
                 </div>
-                <img src="../assets/images/logo.png" alt="" class="header-logo">
+                <img src="../../assets/images/logo.png" alt="" class="header-logo">
                 <div class="header-title">视觉魔法</div>
                 <div class="header-menu">
                     <div 
@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import router from '../router/index.ts';
+import router from '@/router/index.ts';
 import { usePictureStore } from '@/store'
 
 const pictureStore = usePictureStore();
