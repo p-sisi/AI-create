@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="picture">
         <!-- 头部 -->
         <el-affix>
             <div class="header">
@@ -8,86 +8,64 @@
                 </div>
                 <img src="../assets/images/logo.png" alt="" class="header-logo">
                 <div class="header-title">视觉魔法</div>
+                <div class="header-menu">
+                    <div 
+                        v-for="item in ['创作区','创意星球','收藏夹']"  
+                        @click="handleClickHeaderMenu(item)"
+                        :class="{'isSelected': item === pictureStore.activeHeaderMenu}"
+                    >{{ item }}</div>
+                </div>
             </div>
         </el-affix>
 
+        <!-- 内容 -->
         <div class="container-create">
-            <!-- 左边菜单栏 -->
-            <div class="left">
-                <div class="left-divide"></div>
-                <div 
-                    v-for="item in TAB_MENU" 
-                    :key="item.id" 
-                    class="left-context" 
-                    :class="{'selected': item.label == activeTabLabel}"
-                    @click="handleChangeMenu(item.label)">
-                    <div class="icon">
-                        <span class="iconfont icon-wenshengtu" v-if="item.label == '文生图'"></span>
-                        <span class="iconfont icon-duotu" v-if="item.label == '相似图像生成'"></span>
-                        <span class="iconfont icon-tushengwen" v-if="item.label == '图片解说'"></span>
-                    </div>
-                    <div class="left-context-text">{{ item.label }}</div>
-                </div>
-            </div>
-
-            <!-- 右边创作区 -->
-            <div class="right">
-                <TextToPicture v-if="activeTabLabel == '文生图'"></TextToPicture>
-                <PictureToText v-if="activeTabLabel == '图片解说'"></PictureToText>
-                <PictureSimilar v-if="activeTabLabel == '相似图像生成'"></PictureSimilar>
-            </div>
+            <!-- 图片创作子路由出口 -->
+            <router-view></router-view>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 import router from '../router/index.ts';
-import TextToPicture from './TextToPicture.vue';
-import PictureToText from './PictureToText.vue';
-import PictureSimilar from './PictureSimilar.vue';
+import { usePictureStore } from '@/store'
 
-const TAB_MENU = [
-    {
-        id: 1,
-        label: '文生图',
-        description: '用户输入文字描述，AI生成对应的图片',
-    },
-    {
-        id: 2,
-        label: '图片解说',
-        description: '用户上传图片，AI生成对应的文字描述',
-    },
-    {
-        id: 3,
-        label: '相似图像生成',
-        description: '用户上传一张图片，AI根据图片生成相似图像',
-    },
-]
+const pictureStore = usePictureStore();
 
 const handleBackToHome = () => {
     router.push('/')
 }
 
-const activeTabLabel = ref('文生图') 
-const handleChangeMenu = (label: any) => {
-    if (activeTabLabel.value === label )  return 
-    activeTabLabel.value = label;
-
+//切换菜单
+const handleClickHeaderMenu = (item: any) => {
+    if(item === pictureStore.activeHeaderMenu)  return 
+    else {
+        pictureStore.setActiveHeaderMenu(item);
+        if(item === '创意星球'){
+            router.push('/ai_picture/star')
+        }else if(item === '创作区') {
+            router.push('/ai_picture/create')
+        } else{
+            router.push('/ai_picture/collect')
+        }
+    }
 }
+
 </script>
 
-<style lang="scss" scoped>
-.container {
-    color: #907ee9;
+<style scoped lang="scss">
+.picture {
+    background: #181747;
+    height: 100vh;
     .header {
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
         height: 60px;
         padding: 0 20px;
-        background: #302e81;
-        color: #907ee9;
+        background: #181747;
+        color: #fff;
         border-bottom: 2px solid #907ee9;
         .back-to {
             height: 36px;
@@ -113,56 +91,38 @@ const handleChangeMenu = (label: any) => {
             height: 26px;
         }
         .header-title {
-            margin-left: 4px;
+            margin-left: 6px;
             display: inline-block; 
             font-weight: 600;
         }
     }
-
-    .container-create {
-        display: flex;
-        flex-flow: row nowrap;
-        .left {
-            width: 140px;
-            height: calc(100vh - 92px);
-            background: #302e81;
-            padding: 15px;
-            .left-divide {
-                width: 80%;
-                height: 2px;
-                background-color:#907ee9;
-                border-radius: 2px;
-                margin: 20px 10px;
-            }
-            .left-context {
-                display: flex;
-                flex-flow: row nowrap;
-                height: 24px;
-                border-radius: 10px;
-                margin-bottom: 10px;
-                padding: 10px;
-                font-size: 14px;
-                cursor: pointer;
-                &-text {
-                    margin-left: 10px;
-                }
-            }
-            .left-context.selected {
-                color: #eb9dc0;
-                background-color: #4236c6;
-                font-weight: 600;
-            }
-            .icon-duotu {
-                font-size: 12px;
-            }
-        }
-        .right {
-            flex: 1;
-            padding: 10px 20px;
-            background: #302e81;
-            display: flex;
-            flex-flow: row nowrap;
-        }
+    &-create {
+        height: calc(100vh - 92px);
+    }
+}
+//头部菜单样式
+.header-menu {
+    margin-left: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    color: rgb(133, 136, 139);
+    div {
+        padding-bottom: 4px;
+        cursor: pointer;
+        transition: color .3s, font-size .3s;
+    }
+    div:hover {
+        color: #fff;
+    }
+    .isSelected {
+        background: linear-gradient(to right, #b93bed, #5cfcff); 
+        -webkit-background-clip: text; 
+        color: transparent; 
+        display: inline-block; 
+        font-size: 18px;
+        border-bottom: 1px solid #fff;
     }
 }
 </style>

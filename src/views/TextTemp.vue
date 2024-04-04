@@ -41,7 +41,7 @@
 
                 <div class="temp-form-example" @click="handleExample">
                     <div class="iconfont icon-dengpao"></div>
-                    <div>不知道写啥？试试插入示例</div>
+                    <div>不知道写啥？试试<span>插入示例</span></div>
                 </div>
             </div>
             <el-scrollbar :max-height="containerHeight" ref="container">
@@ -272,7 +272,6 @@ onMounted(() => {
                 background-color: rgba(133, 136, 139, 0.3);
                 color: #e9e6e6;
                 border-radius: 10px;
-                cursor: pointer;
                 .icon-dengpao {
                     color: #fdc732 ;
                     font-size: 18px;
@@ -282,6 +281,11 @@ onMounted(() => {
                 div {
                     font-size: 12px;
                     margin-top: 2px;
+                }
+                span {
+                    margin-left: 4px;
+                    color: #bd70e6;
+                    cursor: pointer;
                 }
             }
             .temp-form-example:hover {

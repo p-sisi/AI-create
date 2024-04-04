@@ -8,4 +8,5 @@ pinia.use(piniaPluginPersistedstate);
 
 export const store = pinia;
 
-export * from './formData'
+export * from './formData';
+export * from './Picture';

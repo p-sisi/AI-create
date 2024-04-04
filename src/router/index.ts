@@ -13,8 +13,25 @@ const routes = [
         component: () => import('../views/Text.vue')  
     },{
         name: 'picture',   
-        path: '/ai_picture',  
-        component: () => import('../views/Picture.vue')  
+        path: '/ai_picture/',  
+        component: () => import('../views/Picture.vue'),
+        children: [
+            {
+                name: 'picture_create',
+                path: '/ai_picture/create',
+                component: () => import('../views/PictureCreate.vue')
+            },
+            {
+                name: 'picture_collect',
+                path: '/ai_picture/collect',
+                component: () => import('../views/PictureCollect.vue')
+            },
+            {
+                name: 'picture_star',
+                path: '/ai_picture/star',
+                component: () => import('../views/PictureStar.vue')
+            }
+        ]
     },{
         name: 'file',   
         path: '/ai_file',  

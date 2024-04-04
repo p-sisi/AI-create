@@ -8,7 +8,7 @@
             </div>
 
             <el-input
-                ref="textInput"
+                ref="textInputRef"
                 v-model="inputText"
                 style="width: 300px"
                 :rows="8"
@@ -64,10 +64,10 @@ const changeScale = (item: string) => {
 
 //开始创作
 const isCreating = ref(false);
-const textInput = ref(null);
+const textInputRef = ref(null);
 const handleCreate = () => {
     if(inputText.value === '') {
-        textInput.value.focus();
+        textInputRef.value.focus();
         ElMessage.success('请输入文本描述');
         return 
     }
@@ -82,6 +82,7 @@ const handleCreate = () => {
 }
 .container {
     &-left{
+        position: relative;
         width: 340px;
         height: 100%;
         padding: 20px;
@@ -89,21 +90,21 @@ const handleCreate = () => {
         background-color: rgba($color: #4236c6, $alpha: 0.3);
         box-shadow: 4px 4px 10px 0px rgba(0, 0, 0, 0.3);
         border-radius: 10px;
-        color: #eb9dc0;
+        color: #fff;
         .textInt {
             .textInt-title {
                 font-size: 18px;
             }
             .textInt-promo {
-                font-size: 12px;
-                color: #e7b0c9;
+                font-size: 11px;
                 margin-bottom: 20px;
             }
         }
         ::v-deep(.el-textarea__inner) {
             background-color:rgba($color: #907ee9, $alpha: 0.2);
-            color:#e7b0c9;
             box-shadow: none;
+            color: #fff;
+            padding: 5px 10px 15px 10px
         }
         .example {
             position: relative;
@@ -119,6 +120,7 @@ const handleCreate = () => {
             z-index: 999;
         }
         .photo-text {
+            font-size: 14px;
             margin: 20px 0px 10px 0px;
         }
         .photo-scale {
@@ -143,13 +145,14 @@ const handleCreate = () => {
             }
         }
         .create-btn {
+            position: absolute;
             display: flex;
             flex-flow: row nowrap;
             justify-content: center;
             width: 200px;
-            margin: 0 auto;
             border-radius: 20px;
-            margin-top: 26px;
+            margin-top: 116px;
+            margin-left: 44px;
             background: linear-gradient(to right, #b93bed, #5cfcff);
             cursor: pointer;
             div {
