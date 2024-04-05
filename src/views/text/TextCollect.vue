@@ -16,7 +16,7 @@
            <div class="footer">
                 <div class="footer-time">{{item.createTime}}</div>
                 <div class="footer-icon">
-                    <span class="iconfont icon-icon-copy" @click="handleCopy(item.answer)"></span>
+                    <span class="iconfont ai-copy" @click="handleCopy(item.answer)"></span>
                     <el-divider direction="vertical" />
                     <el-popconfirm
                         confirm-button-text="删除"
@@ -26,7 +26,7 @@
                         @cancel="cancelEvent(item)"
                     >
                         <template #reference>
-                            <span class="iconfont icon-icon-delete"></span>
+                            <span class="iconfont ai-delete"></span>
                         </template>
                     </el-popconfirm>
                 </div>
@@ -108,10 +108,10 @@ const confirmEvent = (item: any) => {
             &-icon {
                 padding: 2px 2px;
                 cursor: pointer;
-                .icon-icon-copy:hover {
+                .ai-copy:hover {
                     color: #b93bed;
                 }
-                .icon-icon-delete:hover {
+                .ai-delete:hover {
                     color: #b93bed;
                 }
             }

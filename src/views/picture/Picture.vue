@@ -4,7 +4,7 @@
         <el-affix>
             <div class="header">
                 <div class="back-to">
-                    <span class="iconfont icon-fanhui" @click="handleBackToHome"></span>
+                    <span class="iconfont ai-back" @click="handleBackToHome"></span>
                 </div>
                 <img src="../../assets/images/logo.png" alt="" class="header-logo">
                 <div class="header-title">视觉魔法</div>

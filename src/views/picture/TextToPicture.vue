@@ -4,7 +4,7 @@
         <div class="container-left">
             <div class="textInt">
                 <div class="textInt-title">文本生成图片</div>
-                <div class="textInt-promo">创造力与想象力的完美融合，让文字变为绚丽图像的神奇力量。</div>
+                <p class="textInt-promo">创造力与想象力的完美融合，让文字变为绚丽图像的神奇力量。</p>
             </div>
 
             <el-input
@@ -32,7 +32,7 @@
             <div class="create-btn" @click="handleCreate" :disabled="isCreating">
                 <div>{{ isCreating ? '正在作图中' : '开始作图' }}</div>
                 <div>
-                    <div class="icon-icon-edit iconfont" v-if="!isCreating"></div>
+                    <div class="ai-edit iconfont" v-if="!isCreating"></div>
                     <el-icon class="is-loading" v-else><Loading /></el-icon>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                                 @confirm="handleDeleteHistory(item)"
                             >
                                 <template #reference>
-                                    <span class="iconfont icon-icon-delete"></span>
+                                    <span class="iconfont ai-delete"></span>
                                 </template>
                             </el-popconfirm>
                     </div>
@@ -215,8 +215,9 @@ const handleDeleteHistory = (item: any) => {
                 margin-bottom: 8px;
             }
             .textInt-promo {
-                font-size: 11px;
+                font-size: 10px;
                 margin-bottom: 20px;
+                color: #c5c6d0;
             }
         }
         ::v-deep(.el-textarea__inner) {
@@ -270,7 +271,7 @@ const handleDeleteHistory = (item: any) => {
             justify-content: center;
             width: 200px;
             border-radius: 20px;
-            margin-top: 116px;
+            margin-top: 100px;
             margin-left: 44px;
             background: linear-gradient(to right, #b93bed, #5cfcff);
             cursor: pointer;
@@ -280,7 +281,7 @@ const handleDeleteHistory = (item: any) => {
                 text-align: center;
                 line-height: 40px;
             }
-            .icon-icon-edit {
+            .ai-edit {
                 width: 40px;
                 margin-left: -5px;
             }

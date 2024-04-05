@@ -3,7 +3,7 @@
         <!-- 创作模板列表 -->
         <div class="temp-list" v-if="isShowTempList">
             <div class="header" @click="isShowTempList = false">
-                <span class="iconfont icon-fanhui"></span>
+                <span class="iconfont ai-back"></span>
                 <span>返回编辑</span>
             </div>
             <el-scrollbar max-height="450px" >
@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="temp-form-example" @click="handleExample">
-                    <div class="iconfont icon-dengpao"></div>
+                    <div class="iconfont ai-tips"></div>
                     <div>不知道写啥？试试<span>插入示例</span></div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
             <div class="create-btn" @click="handleCreate">
                 <div>{{ isCreating ? '正在生成中' : '立即生成' }}</div>
                 <div>
-                    <div class="icon-icon-edit iconfont" v-if="!isCreating"></div>
+                    <div class="ai-edit iconfont" v-if="!isCreating"></div>
                     <el-icon class="is-loading" v-else><Loading /></el-icon>
                 </div>
             </div>
@@ -272,7 +272,7 @@ onMounted(() => {
                 background-color: rgba(133, 136, 139, 0.3);
                 color: #e9e6e6;
                 border-radius: 10px;
-                .icon-dengpao {
+                .ai-tips {
                     color: #fdc732 ;
                     font-size: 18px;
                     margin-left: 10px;
@@ -372,7 +372,7 @@ onMounted(() => {
                 text-align: center;
                 line-height: 40px;
             }
-            .icon-icon-edit {
+            .ai-edit {
                 width: 40px;
                 margin-left: -5px;
             }

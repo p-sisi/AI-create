@@ -12,7 +12,7 @@
                     @click="handleChangeMenu(item.label)">
                     <div class="icon">
                         <span class="iconfont icon-wenshengtu" v-if="item.label == '文生图'"></span>
-                        <span class="iconfont icon-duotu" v-if="item.label == '相似图像生成'"></span>
+                        <span class="iconfont ai-similar" v-if="item.label == '相似图像生成'"></span>
                         <span class="iconfont icon-tushengwen" v-if="item.label == '图片解说'"></span>
                     </div>
                     <div class="left-context-text">{{ item.label }}</div>
@@ -98,7 +98,7 @@ const handleChangeMenu = (label: any) => {
                 background-color: #25206e;
                 font-weight: 600;
             }
-            .icon-duotu {
+            .ai-similar {
                 font-size: 12px;
             }
         }

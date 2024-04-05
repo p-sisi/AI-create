@@ -25,10 +25,10 @@
                         <span>{{ item.create_time }}</span>
                     </div>
                     <div>
-                        <span class="iconfont icon-icon-uncollect" v-if="item.is_collect == false" @click="handleCollect(item)"></span>
-                        <span class="iconfont icon-icon-collect" v-if="item.is_collect == true" @click="handleUnCollect(item)"></span>
+                        <span class="iconfont ai-no-collect" v-if="item.is_collect == false" @click="handleCollect(item)"></span>
+                        <span class="iconfont ai-collect" v-if="item.is_collect == true" @click="handleUnCollect(item)"></span>
                         <el-divider direction="vertical" />
-                        <span class="iconfont icon-icon-copy" @click="handleCopy(item.answer)"></span>
+                        <span class="iconfont ai-copy" @click="handleCopy(item.answer)"></span>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@ const handleUnCollect = (item: any) => {
                 .iconfont:hover {
                     color: #bd70e6;
                 }
-                .icon-icon-collect {
+                .ai-collect {
                     color: #bd70e6;
                 }
             }
