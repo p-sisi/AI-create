@@ -29,7 +29,7 @@
                     {{ item }}
                 </div>
             </div>
-            <div class="create-btn" @click="handleCreate">
+            <div class="create-btn" @click="handleCreate" :disabled="isCreating">
                 <div>{{ isCreating ? '正在作图中' : '开始作图' }}</div>
                 <div>
                     <div class="icon-icon-edit iconfont" v-if="!isCreating"></div>
@@ -40,14 +40,88 @@
 
         <!-- 右边结果 -->
         <div class="container-right">
-
+            <el-scrollbar max-height="520px">
+            <div class="result">
+                <!-- 历史记录列表 -->
+                <div class="result-list" v-for="item in resultList">
+                    <div class="result-list-content">{{ item.content }}</div>
+                    <div class="result-list-img">
+                        <el-image 
+                            :src="value"  
+                            v-for="value in item.imgUrl" 
+                            v-if="item.imgUrl.length !== 0" 
+                            :preview-src-list="item.imgUrl" 
+                            infinite></el-image>
+                        <!-- 预览骨架屏 -->
+                        <el-skeleton style="width: 100%" loading animated v-else class="skeleton">
+                            <template #template>
+                                <el-skeleton-item variant="image" style="width: 33.3%;height: 200px;" v-for="item in 3"/>
+                            </template>
+                        </el-skeleton>
+                    </div>
+                    <div class="result-list-footer">
+                        <span>{{ item.createTime }}</span>
+                            <el-popconfirm
+                                width="220"
+                                confirm-button-text="确定"
+                                cancel-button-text="取消"
+                                icon-color="#626AEF"
+                                title="确定删除该条生成记录？删除后无法恢复记录"
+                                @confirm="handleDeleteHistory(item)"
+                            >
+                                <template #reference>
+                                    <span class="iconfont icon-icon-delete"></span>
+                                </template>
+                            </el-popconfirm>
+                    </div>
+                </div>
+            </div>
+            </el-scrollbar>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { ElMessage } from 'element-plus';
+import { getCurrentTime } from '@/utils/index';
+import { Loading } from '@element-plus/icons-vue'
+
+const resultList = ref([
+    {
+        id: 1,
+        content: '文本内容文本内容',
+        createTime: '2023-12-12 12:12:12',
+        imgUrl: [
+            'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+            'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
+            'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
+        ],
+        scale: '1:1',
+    },
+    {
+        id: 2,
+        content: '文本内容文本内容',
+        createTime: '2023-12-12 12:12:19',
+        imgUrl: [
+            'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+            'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
+            'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
+        ],
+        scale:'9:16',
+    },
+    {
+        id: 3,
+        content: '文本内容文本内容',
+        createTime: '2023-12-12 12:12:19',
+        imgUrl: [
+            'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
+            'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
+            'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
+        ],
+        scale:'16:9',
+    },
+])
 
 const inputText = ref('');
 
@@ -55,7 +129,7 @@ const handleAddExample = () => {
     inputText.value = '油彩画。很多玫瑰花，壁纸居中，粉黄渐变，玫瑰场景，极高分辨率，暖色光影，自然光，电影光影，整洁。'
 }
 
-const SCALE = ['1：1','9：16','16：9','3：4'];
+const SCALE = ['1 : 1','9 : 16','16 : 9'];
 const activeScale = ref('1：1');
 const changeScale = (item: string) => {
     if (activeScale.value === item )  return 
@@ -65,12 +139,51 @@ const changeScale = (item: string) => {
 //开始创作
 const isCreating = ref(false);
 const textInputRef = ref(null);
-const handleCreate = () => {
+const currentTime = ref('');
+
+//生成状态中间数据
+const creatingData = computed(() => {
+    return {
+        content: inputText.value,
+        createTime: currentTime.value,
+        imgUrl: [],
+        scale: activeScale.value,
+    };
+});
+
+const handleCreate = async () => {
     if(inputText.value === '') {
         textInputRef.value.focus();
-        ElMessage.success('请输入文本描述');
+        ElMessage.error('请输入文本描述');
         return 
     }
+    if(isCreating.value) return ElMessage.warning('请稍后再试，正在生成中...');
+    try {
+        isCreating.value = true;
+        currentTime.value = getCurrentTime();
+        resultList.value.unshift(creatingData.value)
+
+        console.log('生成结果',resultList.value);
+        const params = {
+            inputText: inputText.value,
+            scale: activeScale.value,
+        }
+        //TODO:发送文本生成图像的请求,结果的图片地址赋值给imgUrl
+
+        //请求结束后
+        // isCreating.value = false;
+
+    } catch (error) {
+        isCreating.value = false;
+        ElMessage.error('生成失败！请稍后再试')
+        resultList.value.shift();
+    }
+
+}
+
+//删除历史记录
+const handleDeleteHistory = (item: any) => {
+    //TODO:发送请求
 }
 </script>
 
@@ -80,7 +193,12 @@ const handleCreate = () => {
     font-size: 12px;
     color: #e7b0c9;
 }
+.promo:hover {
+    color:#b445ee;
+}
 .container {
+    display: flex;
+    flex-flow: row nowrap;
     &-left{
         position: relative;
         width: 340px;
@@ -94,6 +212,7 @@ const handleCreate = () => {
         .textInt {
             .textInt-title {
                 font-size: 18px;
+                margin-bottom: 8px;
             }
             .textInt-promo {
                 font-size: 11px;
@@ -129,7 +248,7 @@ const handleCreate = () => {
             .scale {
                 width: 100px;
                 height: 30px;
-                padding-left:14px ;
+                text-align: center;
                 line-height: 30px;
                 color: #e7b0c9;
                 font-size: 14px;
@@ -171,6 +290,55 @@ const handleCreate = () => {
         }
         .create-btn:hover {
             background: linear-gradient(to right, #c269e7, #7ce6e8);
+        }
+    }
+
+    &-right {
+        flex:1;
+        padding-left: 15px;
+        .result {
+            color: #fff;
+            &-list {
+                position: relative;
+                padding-right: 20px;
+                padding: 10px;
+                padding-bottom: 20px;
+                border-radius: 8px;
+                background-color: #25206e;
+                margin-bottom: 50px;
+                margin-right: 10px;
+                &-content {
+                    margin-bottom: 10px;
+                    font-size: 15px;
+                    color: #fff;
+                }
+                &-img,.skeleton {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: space-between;
+                    gap: 8px;
+                    ::v-deep .el-skeleton {
+                        --el-skeleton-color: #3b3387;
+                        --el-skeleton-to-color: #6961a8a2;
+                    }
+                }
+                &-footer {
+                    float: right;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    gap: 20px;
+                    margin-top: 20px;
+                    font-size: 13px;
+                    color: #907ee9;
+                    .iconfont {
+                        cursor: pointer;
+                    }
+                    .iconfont:hover {
+                        color: #b445ee;
+                    }
+                }
+            }
         }
     }
 }

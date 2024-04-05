@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
 import 'animate.css';
+import 'element-plus/es/components/message/style/css'
 import App from './App.vue'
 import { store } from '@/store'
 
