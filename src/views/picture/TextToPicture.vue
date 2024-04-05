@@ -249,12 +249,12 @@ const handleDeleteHistory = (item: any) => {
             .scale {
                 width: 100px;
                 height: 30px;
+                margin-right: 10px;
                 text-align: center;
                 line-height: 30px;
                 color: #e7b0c9;
                 font-size: 14px;
                 background-color:rgba($color: #907ee9, $alpha: 0.2);
-                margin-right: 10px;
                 border-radius: 2px;
                 cursor: pointer;
                 transition: all 0.3s;
