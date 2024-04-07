@@ -85,7 +85,13 @@
                                 <span class="iconfont ai-copy icon" @click="handleCopy(item.text)"></span>
                             </el-tooltip>
                             <span style="margin: 8px;color: #3b3387">|</span>
-                            <el-popconfirm title="确定删除该条历史记录?" @confirm="handleDelete(item)" teleported>
+                            <el-popconfirm width="220"
+                                confirm-button-text="确定"
+                                cancel-button-text="取消"
+                                icon-color="#626AEF"
+                                title="确定删除该条生成记录？删除后无法恢复记录"
+                                @confirm="handleDelete(item)" 
+                                >
                                 <template #reference>
                                     <span class="iconfont ai-delete icon"></span>
                                 </template>
@@ -107,7 +113,7 @@
 import { ref, computed } from 'vue';
 import { Plus, Loading } from '@element-plus/icons-vue';
 import type { UploadProps } from 'element-plus'
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import { getCurrentTime } from '@/utils/index';
 
 const DATA = ref([
