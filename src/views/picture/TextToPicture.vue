@@ -2,33 +2,36 @@
     <div class="container">
         <!-- 左边需求 -->
         <div class="container-left">
-            <div class="textInt">
-                <div class="textInt-title">文本生成图片</div>
-                <p class="textInt-promo">创造力与想象力的完美融合，让文字变为绚丽图像的神奇力量。</p>
-            </div>
+            <div>
+                <div class="textInt">
+                    <div class="textInt-title">文本生成图片</div>
+                    <p class="textInt-promo">创造力与想象力的完美融合，让文字变为绚丽图像的神奇力量。</p>
+                </div>
 
-            <el-input
-                ref="textInputRef"
-                v-model="inputText"
-                style="width: 300px"
-                :rows="8"
-                type="textarea"
-                placeholder="请输入你心中的图片画面描述，尽量详细一点哦~"
-                resize="none"
-            />
-            <div class="promo example" @click="handleAddExample">插入示例</div>
-            <div class="promo clear" @click="inputText = ''">清空</div>
+                <el-input
+                    ref="textInputRef"
+                    v-model="inputText"
+                    style="width: 300px"
+                    :rows="8"
+                    type="textarea"
+                    placeholder="请输入你心中的图片画面描述，尽量详细一点哦~"
+                    resize="none"
+                />
+                <div class="promo example" @click="handleAddExample">插入示例</div>
+                <div class="promo clear" @click="inputText = ''">清空</div>
 
-            <div class="photo-text">照片比例：</div>
-            <div class="photo-scale">
-                <div
-                    v-for="item in SCALE"
-                    @click="changeScale(item)"
-                    class="scale"
-                    :class="{ 'selected': item === activeScale }">
-                    {{ item }}
+                <div class="photo-text">照片比例：</div>
+                <div class="photo-scale">
+                    <div
+                        v-for="item in SCALE"
+                        @click="changeScale(item)"
+                        class="scale"
+                        :class="{ 'selected': item === activeScale }">
+                        {{ item }}
+                    </div>
                 </div>
             </div>
+            
             <div class="create-btn" @click="handleCreate" :disabled="isCreating">
                 <div>{{ isCreating ? '正在作图中' : '开始作图' }}</div>
                 <div>
@@ -40,7 +43,7 @@
 
         <!-- 右边结果 -->
         <div class="container-right">
-            <el-scrollbar max-height="520px">
+            <el-scrollbar max-height="460px">
             <div class="result">
                 <!-- 历史记录列表 -->
                 <div class="result-list" v-for="item in resultList">
@@ -200,7 +203,9 @@ const handleDeleteHistory = (item: any) => {
     display: flex;
     flex-flow: row nowrap;
     &-left{
-        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
         width: 340px;
         height: 100%;
         padding: 20px;
@@ -265,13 +270,11 @@ const handleDeleteHistory = (item: any) => {
             }
         }
         .create-btn {
-            position: absolute;
             display: flex;
             flex-flow: row nowrap;
             justify-content: center;
             width: 200px;
             border-radius: 20px;
-            margin-top: 100px;
             margin-left: 44px;
             background: linear-gradient(to right, #b93bed, #5cfcff);
             cursor: pointer;

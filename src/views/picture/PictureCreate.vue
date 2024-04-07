@@ -11,9 +11,9 @@
                     :class="{'selected': item.label == activeTabLabel}"
                     @click="handleChangeMenu(item.label)">
                     <div class="icon">
-                        <span class="iconfont icon-wenshengtu" v-if="item.label == '文生图'"></span>
+                        <span class="iconfont ai-wenshengtu" v-if="item.label == '文生图'"></span>
                         <span class="iconfont ai-similar" v-if="item.label == '相似图像生成'"></span>
-                        <span class="iconfont icon-tushengwen" v-if="item.label == '图片解说'"></span>
+                        <span class="iconfont ai-tushengwen" v-if="item.label == '图片解说'"></span>
                     </div>
                     <div class="left-context-text">{{ item.label }}</div>
                 </div>
@@ -104,7 +104,7 @@ const handleChangeMenu = (label: any) => {
         }
         .right {
             flex: 1;
-            padding: 10px 20px;
+            padding: 10px ;
             background: #181747;
             display: flex;
             flex-flow: row nowrap;
