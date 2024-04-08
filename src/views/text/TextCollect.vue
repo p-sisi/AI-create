@@ -1,6 +1,10 @@
 <template>
     <div class="collect">
-       <div class="collect-container" v-for="item in COLLECTION_LIST" :key="item.id">
+        <div v-if="isLoading" class="collect-loading">
+            <div  ref="animation1"></div>
+            正在加载中...
+        </div>
+       <div class="collect-container" v-for="item in COLLECTION_LIST" :key="item.id" v-else>
            <div class="title">
             <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片 -->
                 <img src="../../assets/images/logo.png" alt="">
@@ -36,8 +40,14 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { COLLECTION_LIST } from '@/content/index'
 import { ElMessage } from 'element-plus';
+import { Loading } from '@element-plus/icons-vue';
+import lottie from 'lottie-web';
+import LoadingCar from '@/assets/images/car-loading.json';
+
+const isLoading = ref(true);  //页面加载状态
 
 const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -53,6 +63,22 @@ const confirmEvent = (item: any) => {
     console.log('删除收藏',item)
     ElMessage.success('删除成功')
 }
+
+const animation1 = ref<any>(null) 
+
+onMounted(() => {
+    lottie.loadAnimation({
+        container: animation1.value,   
+        renderer: 'svg',   
+        loop: true,  
+        autoplay: true,  
+        animationData: LoadingCar   
+    })
+    //TODO:请求收藏数据之后，将isLoading设置为false
+    setTimeout(() => { 
+        isLoading.value = false 
+    }, 5000)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -62,6 +88,21 @@ const confirmEvent = (item: any) => {
     flex-flow: row wrap;
     gap: 20px;
     padding: 24px;
+    &-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 80vh;
+        width: 100%;
+        font-size: 12px;
+        color: #999;
+        div {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+    }
     .collect-container {
         width: 320px;
         height: 400px;

@@ -8,38 +8,55 @@
 
        <el-scrollbar max-height="465px">
        <div class="result">
-            <div 
-                class="result-dialogue" 
-                v-for="item in RESULT"
-                :key="item.id">
-                <div class="dialogue-question">
-                    <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
-                    <img src="../../assets/images/logo.png" alt="">
-                    <div>{{ item.tempTitle }}</div>
-                </div>
-                <div class="dialogue-answer">{{ item.answer }}</div>
-                <div class="dialogue-footer">
+            <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
+                <template #template>
+                    <!-- 加载中骨架屏 -->
                     <div>
-                        <span>生成&nbsp;{{ item.answer.replace(/\s+/g, '').length }}&nbsp;字</span>
-                        <el-divider direction="vertical" />
-                        <span>{{ item.create_time }}</span>
+                        <el-skeleton-item variant="h4" style="width: 50%;margin: 10px;" />
+                        <el-skeleton-item variant="h4" style="width: 80%;margin: 5px" />
+                        <el-skeleton-item variant="h4" style="width: 30%;margin: 5px" />
+                        <el-skeleton-item variant="image" style="width: 600px; height: 100px;margin: 10px;" />
                     </div>
-                    <div>
-                        <span class="iconfont ai-no-collect" v-if="item.is_collect == false" @click="handleCollect(item)"></span>
-                        <span class="iconfont ai-collect" v-if="item.is_collect == true" @click="handleUnCollect(item)"></span>
-                        <el-divider direction="vertical" />
-                        <span class="iconfont ai-copy" @click="handleCopy(item.answer)"></span>
+                </template>
+                <template #default>
+                    <!-- 加载完成数据 -->
+                    <div 
+                        class="result-dialogue" 
+                        v-for="item in RESULT"
+                        :key="item.id">
+                        <div class="dialogue-question">
+                            <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
+                            <img src="../../assets/images/logo.png" alt="">
+                            <div>{{ item.tempTitle }}</div>
+                        </div>
+                        <div class="dialogue-answer">{{ item.answer }}</div>
+                        <div class="dialogue-footer">
+                            <div>
+                                <span>生成&nbsp;{{ item.answer.replace(/\s+/g, '').length }}&nbsp;字</span>
+                                <el-divider direction="vertical" />
+                                <span>{{ item.create_time }}</span>
+                            </div>
+                            <div>
+                                <span class="iconfont ai-no-collect" v-if="item.is_collect == false" @click="handleCollect(item)"></span>
+                                <span class="iconfont ai-collect" v-if="item.is_collect == true" @click="handleUnCollect(item)"></span>
+                                <el-divider direction="vertical" />
+                                <span class="iconfont ai-copy" @click="handleCopy(item.answer)"></span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </template>
+            </el-skeleton>
        </div>
        </el-scrollbar>
     </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { RESULT } from '@/content'
+
+const isLoading = ref(true);   //页面加载
 
 //复制
 const handleCopy = (text: string) => {
@@ -61,6 +78,11 @@ const handleCollect = (item: any) => {
 const handleUnCollect = (item: any) => {
     ElMessage.success('取消收藏')
 }
+
+onMounted(() => {
+    //TODO:获取历史记录后，将isLoading设置为false
+    // isLoading.value = false;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -123,5 +145,9 @@ const handleUnCollect = (item: any) => {
             }
         }
     }
+}
+::v-deep .el-skeleton {
+    --el-skeleton-color: #0b0a0c93;
+    --el-skeleton-to-color: #0b0a0c31;
 }
 </style>

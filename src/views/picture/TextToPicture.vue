@@ -46,38 +46,53 @@
             <el-scrollbar max-height="460px">
             <div class="result">
                 <!-- 历史记录列表 -->
-                <div class="result-list" v-for="item in resultList">
-                    <div class="result-list-content">{{ item.content }}</div>
-                    <div class="result-list-img">
-                        <el-image 
-                            :src="value"  
-                            v-for="value in item.imgUrl" 
-                            v-if="item.imgUrl.length !== 0" 
-                            :preview-src-list="item.imgUrl" 
-                            infinite></el-image>
-                        <!-- 预览骨架屏 -->
-                        <el-skeleton style="width: 100%" loading animated v-else class="skeleton">
-                            <template #template>
-                                <el-skeleton-item variant="image" style="width: 33.3%;height: 200px;" v-for="item in 3"/>
-                            </template>
-                        </el-skeleton>
-                    </div>
-                    <div class="result-list-footer">
-                        <span>{{ item.createTime }}</span>
-                            <el-popconfirm
-                                width="220"
-                                confirm-button-text="确定"
-                                cancel-button-text="取消"
-                                icon-color="#626AEF"
-                                title="确定删除该条生成记录？删除后无法恢复记录"
-                                @confirm="handleDeleteHistory(item)"
-                            >
-                                <template #reference>
-                                    <span class="iconfont ai-delete"></span>
-                                </template>
-                            </el-popconfirm>
-                    </div>
-                </div>
+                <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
+                    <template #template>
+                        <!-- 加载中骨架屏 -->
+                        <div>
+                            <el-skeleton-item variant="h4" style="width: 50%;margin: 10px;" />
+                            <el-skeleton-item variant="h4" style="width: 80%;margin: 5px" />
+                            <el-skeleton-item variant="h4" style="width: 30%;margin: 5px" />
+                            <el-skeleton-item variant="image" style="width: 600px; height: 100px;margin: 10px;" />
+                        </div>
+                    </template>
+                    <template #default>
+                        <!-- 加载完成数据 -->
+                        <div class="result-list" v-for="item in resultList">
+                            <div class="result-list-content">{{ item.content }}</div>
+                            <div class="result-list-img">
+                                <el-image 
+                                    :src="value"  
+                                    v-for="value in item.imgUrl" 
+                                    v-if="item.imgUrl.length !== 0" 
+                                    :preview-src-list="item.imgUrl" 
+                                    infinite
+                                    lazy></el-image>
+                                <!-- 生成中骨架屏 -->
+                                <el-skeleton style="width: 100%" loading animated v-else class="skeleton">
+                                    <template #template>
+                                        <el-skeleton-item variant="image" style="width: 33.3%;height: 200px;" v-for="item in 3"/>
+                                    </template>
+                                </el-skeleton>
+                            </div>
+                            <div class="result-list-footer">
+                                <span>{{ item.createTime }}</span>
+                                    <el-popconfirm
+                                        width="220"
+                                        confirm-button-text="确定"
+                                        cancel-button-text="取消"
+                                        icon-color="#626AEF"
+                                        title="确定删除该条生成记录？删除后无法恢复记录"
+                                        @confirm="handleDeleteHistory(item)"
+                                    >
+                                        <template #reference>
+                                            <span class="iconfont ai-delete"></span>
+                                        </template>
+                                    </el-popconfirm>
+                            </div>
+                        </div>
+                    </template>
+                </el-skeleton>
             </div>
             </el-scrollbar>
         </div>
@@ -85,10 +100,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getCurrentTime } from '@/utils/index';
 import { Loading } from '@element-plus/icons-vue'
+
+const isLoading  = ref(true);
 
 const resultList = ref([
     {
@@ -188,6 +205,11 @@ const handleCreate = async () => {
 const handleDeleteHistory = (item: any) => {
     //TODO:发送请求
 }
+
+onMounted(() => {
+    //TODO:获取历史记录后，将isLoading设置为false
+    isLoading.value = false;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -321,10 +343,6 @@ const handleDeleteHistory = (item: any) => {
                     flex-flow: row nowrap;
                     justify-content: space-between;
                     gap: 8px;
-                    ::v-deep .el-skeleton {
-                        --el-skeleton-color: #3b3387;
-                        --el-skeleton-to-color: #6961a8a2;
-                    }
                 }
                 &-footer {
                     float: right;
@@ -345,5 +363,9 @@ const handleDeleteHistory = (item: any) => {
             }
         }
     }
+}
+::v-deep .el-skeleton {
+    --el-skeleton-color: #574dac80;
+    --el-skeleton-to-color: #6961a8a2;
 }
 </style>

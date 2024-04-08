@@ -48,61 +48,75 @@
         <div class="container-right">
             <el-scrollbar max-height="460px">
             <div class="container-right-list">
-                <div class="list" v-for="item in DATA">
-                    <div class="list-header">
-                        <div class="flex-row" style="gap:10px;align-items: flex-end">
-                            <el-tooltip
-                                effect="dark"
-                                content="点击查看图片"
-                                placement="right-start"
-                            >
-                                <div class="list-header-img">
-                                    <el-image v-if="item.text == ''" :src="imgUrl" :preview-src-list="[imgUrl]"/>
-                                    <el-image v-else :src="item.imgUrl" :preview-src-list="[item.imgUrl]"/>
-                                </div>
-                            </el-tooltip>
-                            <span>图片</span>
-                        </div>
+                <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
+                    <template #template>
+                        <!-- 加载中骨架屏 -->
                         <div>
-                            <span>{{ item.createTime }}</span>
-                            <span style="margin: 8px;color: #3b3387">|</span>
-                            <span>共 {{ item.text.length }} 字</span>
-                            <span style="margin: 8px;color: #3b3387">|</span>
-                            <el-tooltip
-                                effect="dark"
-                                :content=" item.isCollect==true ? '取消收藏' : '收藏'"
-                                placement="bottom"
-                            >
-                                <span class="iconfont ai-no-collect icon" v-if="!item.isCollect" @click="handleCollect(item)"></span>
-                                <span class="iconfont ai-collect icon" v-else @click="handleCancelCollect(item)"></span>
-                            </el-tooltip>
-                            <span style="margin: 8px;color: #3b3387">|</span>
-                            <el-tooltip
-                                effect="dark"
-                                content="复制"
-                                placement="bottom"
-                            >
-                                <span class="iconfont ai-copy icon" @click="handleCopy(item.text)"></span>
-                            </el-tooltip>
-                            <span style="margin: 8px;color: #3b3387">|</span>
-                            <el-popconfirm width="220"
-                                confirm-button-text="确定"
-                                cancel-button-text="取消"
-                                icon-color="#626AEF"
-                                title="确定删除该条生成记录？删除后无法恢复记录"
-                                @confirm="handleDelete(item)" 
-                                >
-                                <template #reference>
-                                    <span class="iconfont ai-delete icon"></span>
-                                </template>
-                            </el-popconfirm>
+                            <el-skeleton-item variant="h4" style="width: 50%;margin: 10px;" />
+                            <el-skeleton-item variant="h4" style="width: 80%;margin: 5px" />
+                            <el-skeleton-item variant="h4" style="width: 30%;margin: 5px" />
+                            <el-skeleton-item variant="image" style="width: 600px; height: 100px;margin: 10px;" />
                         </div>
-                    </div>
-                    <div class="list-text">
-                        <div v-if="item.text !== ''">{{ item.text }}</div>
-                        <el-skeleton :rows="2" animated :throttle="500" v-else/>
-                    </div>
-                </div>
+                    </template>
+                    <template #default>
+                        <!-- 加载完成数据 -->
+                        <div class="list" v-for="item in DATA">
+                            <div class="list-header">
+                                <div class="flex-row" style="gap:10px;align-items: flex-end">
+                                    <el-tooltip
+                                        effect="dark"
+                                        content="点击查看图片"
+                                        placement="right-start"
+                                    >
+                                        <div class="list-header-img">
+                                            <el-image v-if="item.text == ''" :src="imgUrl" :preview-src-list="[imgUrl]" lazy/>
+                                            <el-image v-else :src="item.imgUrl" :preview-src-list="[item.imgUrl]" lazy/>
+                                        </div>
+                                    </el-tooltip>
+                                    <span>图片</span>
+                                </div>
+                                <div>
+                                    <span>{{ item.createTime }}</span>
+                                    <span style="margin: 8px;color: #3b3387">|</span>
+                                    <span>共 {{ item.text.length }} 字</span>
+                                    <span style="margin: 8px;color: #3b3387">|</span>
+                                    <el-tooltip
+                                        effect="dark"
+                                        :content=" item.isCollect==true ? '取消收藏' : '收藏'"
+                                        placement="bottom"
+                                    >
+                                        <span class="iconfont ai-no-collect icon" v-if="!item.isCollect" @click="handleCollect(item)"></span>
+                                        <span class="iconfont ai-collect icon" v-else @click="handleCancelCollect(item)"></span>
+                                    </el-tooltip>
+                                    <span style="margin: 8px;color: #3b3387">|</span>
+                                    <el-tooltip
+                                        effect="dark"
+                                        content="复制"
+                                        placement="bottom"
+                                    >
+                                        <span class="iconfont ai-copy icon" @click="handleCopy(item.text)"></span>
+                                    </el-tooltip>
+                                    <span style="margin: 8px;color: #3b3387">|</span>
+                                    <el-popconfirm width="220"
+                                        confirm-button-text="确定"
+                                        cancel-button-text="取消"
+                                        icon-color="#626AEF"
+                                        title="确定删除该条生成记录？删除后无法恢复记录"
+                                        @confirm="handleDelete(item)" 
+                                        >
+                                        <template #reference>
+                                            <span class="iconfont ai-delete icon"></span>
+                                        </template>
+                                    </el-popconfirm>
+                                </div>
+                            </div>
+                            <div class="list-text">
+                                <div v-if="item.text !== ''">{{ item.text }}</div>
+                                <el-skeleton :rows="2" animated :throttle="500" v-else/>
+                            </div>
+                        </div>
+                    </template>
+                </el-skeleton>
             </div>
             </el-scrollbar>
         </div>
@@ -110,11 +124,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { Plus, Loading } from '@element-plus/icons-vue';
 import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus';
 import { getCurrentTime } from '@/utils/index';
+
+const isLoading = ref(true);   //页面加载
 
 const DATA = ref([
     {
@@ -245,6 +261,11 @@ const handleCopy = (text: any) => {
 const handleDelete = (item: any) => {
     ElMessage.success('删除成功');
 }
+
+onMounted(() => {
+    //TODO:获取历史记录后，将isLoading设置为false
+    isLoading.value = false;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -398,13 +419,13 @@ const handleDelete = (item: any) => {
                     background-color: #25206e;
                     border-radius: 10px;
                     box-sizing: border-box;
-                    ::v-deep .el-skeleton {
-                        --el-skeleton-color: #3b3387;
-                        --el-skeleton-to-color: #6961a8a2;
-                    }
                 }
             }
         }
     }
+}
+::v-deep .el-skeleton {
+    --el-skeleton-color: #574dac80;
+    --el-skeleton-to-color: #6961a8a2;
 }
 </style>

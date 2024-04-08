@@ -37,54 +37,69 @@
         <div class="container-right">
             <el-scrollbar max-height="460px">
             <div class="container-right-list">
-                <div class="list" v-for="item in DATA">
-
-                    <div class="list-header">
-                        <div class="flex-row" style="gap:10px;align-items: flex-end">
-                            <el-tooltip
-                                effect="dark"
-                                content="点击查看图片"
-                                placement="right-start"
-                            >
-                                <div class="list-header-img">
-                                    <el-image v-if="item.originImg == ''" :src="imgUrl" :preview-src-list="[imgUrl]"/>
-                                    <el-image v-else :src="item.originImg" :preview-src-list="[item.originImg]"/>
-                                </div>
-                            </el-tooltip>
-                            <span>图片</span>
-                        </div>
-                        
+                <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
+                    <template #template>
+                        <!-- 加载中骨架屏 -->
                         <div>
-                            <span>{{ item.createTime }}</span>
-                            <span style="margin: 8px;color: #3b3387">|</span>
-                            <el-popconfirm width="220"
-                                confirm-button-text="确定"
-                                cancel-button-text="取消"
-                                icon-color="#626AEF"
-                                title="确定删除该条生成记录？删除后无法恢复记录" 
-                                @confirm="handleDelete(item)" teleported>
-                                <template #reference>
-                                    <span class="iconfont ai-delete icon"></span>
-                                </template>
-                            </el-popconfirm>
+                            <el-skeleton-item variant="h4" style="width: 50%;margin: 10px;" />
+                            <el-skeleton-item variant="h4" style="width: 80%;margin: 5px" />
+                            <el-skeleton-item variant="h4" style="width: 30%;margin: 5px" />
+                            <el-skeleton-item variant="image" style="width: 600px; height: 100px;margin: 10px;" />
                         </div>
-                    </div>
+                    </template>
+                    <template #default>
+                        <!-- 加载完成数据 -->
+                        <div class="list" v-for="item in DATA">
+                            <div class="list-header">
+                                <div class="flex-row" style="gap:10px;align-items: flex-end">
+                                    <el-tooltip
+                                        effect="dark"
+                                        content="点击查看图片"
+                                        placement="right-start"
+                                    >
+                                        <div class="list-header-img">
+                                            <el-image v-if="item.originImg == ''" :src="imgUrl" :preview-src-list="[imgUrl]" lazy/>
+                                            <el-image v-else :src="item.originImg" :preview-src-list="[item.originImg]" lazy/>
+                                        </div>
+                                    </el-tooltip>
+                                    <span>图片</span>
+                                </div>
+                                
+                                <div>
+                                    <span>{{ item.createTime }}</span>
+                                    <span style="margin: 8px;color: #3b3387">|</span>
+                                    <el-popconfirm width="220"
+                                        confirm-button-text="确定"
+                                        cancel-button-text="取消"
+                                        icon-color="#626AEF"
+                                        title="确定删除该条生成记录？删除后无法恢复记录" 
+                                        @confirm="handleDelete(item)" teleported>
+                                        <template #reference>
+                                            <span class="iconfont ai-delete icon"></span>
+                                        </template>
+                                    </el-popconfirm>
+                                </div>
+                            </div>
 
-                    <div class="list-img">
-                        <el-image 
-                            :src="value"  
-                            v-for="value in item.imgUrlArray" 
-                            v-if="item.imgUrlArray.length !== 0" 
-                            :preview-src-list="item.imgUrlArray" 
-                            infinite></el-image>
-                        <!-- 预览骨架屏 -->
-                        <el-skeleton style="width: 100%" loading animated v-else class="skeleton">
-                            <template #template>
-                                <el-skeleton-item variant="image" style="width: 33.3%;height: 200px;" v-for="item in 3"/>
-                            </template>
-                        </el-skeleton>
-                    </div>
-                </div>
+                            <div class="list-img">
+                                <el-image 
+                                    :src="value"  
+                                    v-for="value in item.imgUrlArray" 
+                                    v-if="item.imgUrlArray.length !== 0" 
+                                    :preview-src-list="item.imgUrlArray" 
+                                    infinite
+                                    lazy></el-image>
+                                <!-- 预览骨架屏 -->
+                                <el-skeleton style="width: 100%" loading animated v-else class="skeleton">
+                                    <template #template>
+                                        <el-skeleton-item variant="image" style="width: 33.3%;height: 200px;" v-for="item in 3"/>
+                                    </template>
+                                </el-skeleton>
+                            </div>
+                        </div>
+                    </template>
+                </el-skeleton>
+
             </div>
             </el-scrollbar>
         </div>
@@ -92,11 +107,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import type { UploadProps } from 'element-plus'
 import { Plus, Loading } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { getCurrentTime } from '@/utils/index';
+
+const isLoading = ref(true);   //页面加载
 
 const DATA = ref([
     {
@@ -133,7 +150,6 @@ const DATA = ref([
 ])
 
 const isCreating = ref(false);
-
 
 const isUploading = ref(false);
 const imgUrl = ref('');
@@ -197,6 +213,11 @@ const handleCreate = async () => {
 const handleDelete = (item: any) => {
     ElMessage.success('删除成功');
 }
+
+onMounted(() => {
+    //TODO:获取历史记录后，将isLoading设置为false
+    isLoading.value = false;
+})
 </script>
 
 <style lang="scss" scoped>
@@ -328,10 +349,6 @@ const handleDelete = (item: any) => {
                     background-color: #25206e;
                     border-radius: 10px;
                     box-sizing: border-box;
-                    ::v-deep .el-skeleton {
-                        --el-skeleton-color: #3b3387;
-                        --el-skeleton-to-color: #6961a8a2;
-                    }
                 }
                 &-img {
                     padding: 10px;
@@ -340,5 +357,9 @@ const handleDelete = (item: any) => {
             }
         }
     }
+}
+::v-deep .el-skeleton {
+    --el-skeleton-color: #574dac80;
+    --el-skeleton-to-color: #6961a8a2;
 }
 </style>
