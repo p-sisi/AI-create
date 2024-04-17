@@ -47,14 +47,14 @@ import { Loading } from '@element-plus/icons-vue';
 import lottie from 'lottie-web';
 import LoadingCar from '@/assets/images/car-loading.json';
 
-const isLoading = ref(true);  //页面加载状态
+const isLoading = ref(false);  //页面加载状态
 
 const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text)
         .then(() => {
             ElMessage.success('复制成功')
         })
-        .catch((error) => {
+        .catch((error: any) => {
             ElMessage.error('复制失败')
         })
 }

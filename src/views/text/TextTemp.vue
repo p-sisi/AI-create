@@ -125,7 +125,11 @@ const isShowTempList = ref(false);
 
 //插入示例
 const handleExample = () => {
-    
+    formData.value.formItems.forEach((item: any) => {
+        if (item.exampleValue !== undefined && item.exampleValue !== '') {
+            item.collectValue = item.exampleValue;
+        }
+    });
 }
 
 //表单数据
@@ -146,11 +150,11 @@ const formRef = ref<FormInstance>()
 const isCreating = ref(false);
 const handleCreate = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    formRef.value.validate(async (valid) => {
+    formRef.value.validate(async (valid: any) => {
         if (valid) {
             console.log('submit!')
         } else {
-            console.log('成功获取到表单数据', formData.value)
+            console.log('表单验证没通过', formData.value)
         }
     })
     // isCreating.value = true;
@@ -177,9 +181,9 @@ const handleChangeTemp = (item: any) => {
 }
 
 onMounted(() => {
-      updateContainerHeight(); 
-      window.addEventListener('resize', updateContainerHeight);
-    });
+    updateContainerHeight(); 
+    window.addEventListener('resize', updateContainerHeight);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -214,7 +218,7 @@ onMounted(() => {
             .image {
                 width: 60px;
                 height: 60px;
-                background-color:#303032;
+                background-color:#fff;
                 border-radius: 10px;
                 box-shadow: 0px 0px 5px 0 rgba(0, 0, 0, 0.3);
                 img {
@@ -256,6 +260,9 @@ onMounted(() => {
                     img {
                         width: 28px;
                         height: 28px;
+                        padding: 2px;
+                        background-color: #fff;
+                        border-radius: 4px;
                     }
                     div {
                         margin-left: 8px;
@@ -295,7 +302,9 @@ onMounted(() => {
 
         .edit-form {
             height: calc(100vh - 98px - 54px - 80px);
+            padding: 4px;
             margin-top: 18px;
+            box-sizing: border-box;
             .edit-text {
                 width: 100%;
                 ::v-deep .el-input__wrapper {

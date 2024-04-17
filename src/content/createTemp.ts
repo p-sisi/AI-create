@@ -7,18 +7,6 @@ export const CREATION_TEMPLATE = [
         imgUrl: '/src/assets/images/temp-free.png',
         formItems: [
             {
-                label: '对话内容',
-                prop: 'content',
-                type: 'input',
-                placeholder: '请输入对话内容',
-                rules: {
-                    required: true,
-                    message: '请输入对话内容',
-                },
-                collectValue: '',
-                exampleValue: '你好，帮我写一段200字的任意文章',
-            },
-            {
                 label: '文章内容',
                 prop: 'articleContent',
                 type: 'textarea',
@@ -30,91 +18,114 @@ export const CREATION_TEMPLATE = [
                 collectValue: '',
                 exampleValue: '这是一段示例文章内容，请替换为你的文章内容。',
             },
-            {
-                label: '文章类型',
-                prop: 'type',
-                type: 'selectRadio',
-                placeholder: '请选择文章类型',
-                options: ['新闻', '科技', '娱乐', '体育'],
-                rules: {
-                    required: true,
-                    message: '请选择文章类型',
-                },
-                collectValue: '新闻',
-                exampleValue: '新闻',
-            }
         ]
     },
     {
         id: 2,
-        name: '文本生成',
-        introduce: '一键生成精美文本，满足不同创作需求。',
-        imgUrl: '/src/assets/images/logo.png',
+        name: '文案润色',
+        introduce: '提升文案品质，打造精彩文字，让您的内容更具吸引力。',
+        imgUrl: '/src/assets/images/wenan-runse.png',
         formItems: [
             {
-                label: '生成内容',
+                label: '需要润色的文案',
                 prop: 'content',
                 type: 'textarea',
-                placeholder: '请输入生成内容',
+                placeholder: '请输入需要润色的文案',
                 rules: {
                     required: true,
-                    message: '请输入对话内容',
-                }
+                    message: '请输入需要润色的文案',
+                },
+                collectValue: '',
+                exampleValue: '在这个校园里，每天都有新的故事发生。清晨，知识在青春中生根；午后，图书馆是智慧的海洋；黄昏，操场上是青春与梦想的交融。这里，承载着学习、友谊和成长的美好时光。',
+            },
+            {
+                label: '创作风格',
+                prop: 'createType',
+                type: 'selectRadio',
+                placeholder: '请选择文章类型',
+                options: ['不限', '专业严谨', '轻松幽默', '文艺风','随笔'],
+                rules: {
+                    required: true,
+                    message: '请选择创作风格',
+                },
+                collectValue: '',
+                exampleValue: '不限',
             }
         ]
     },
     {
         id: 3,
-        name: '文本生成',
-        introduce: '一键生成精美文本，满足不同创作需求。',
-        imgUrl: '/src/assets/images/logo.png',
+        name: '通知撰写',
+        introduce: '智能撰写通知，节省时间提高效率。',
+        imgUrl: '/src/assets/images/notice-temp.png',
         formItems: [
             {
-                label: '生成内容',
-                prop: 'content',
-                type: 'textarea',
-                placeholder: '请输入生成内容',
+                label: '通知主题',
+                prop: 'meetTheme',
+                type: 'input',
+                placeholder: '请输入通知主题',
                 rules: {
                     required: true,
-                    message: '请输入对话内容',
-                }
-            }
+                    message: '通知主题',
+                },
+                collectValue: '',
+                exampleValue: '季度销售总结',
+            },
+            {
+                label: '时间地点',
+                prop: 'meetTime',
+                type: 'input',
+                placeholder: '请输入时间地点',
+                rules: {
+                    required: true,
+                    message: '请输入时间地点',
+                },
+                collectValue: '',
+                exampleValue: '周一下午三点、一楼大会议室',
+            },
+            {
+                label: '会议内容',
+                prop: 'meetContent',
+                type: 'textarea',
+                placeholder: '请输入会议内容',
+                rules: {
+                    required: false,
+                },
+                collectValue: '',
+                exampleValue: '',
+            },
         ]
     },
     {
         id: 4,
-        name: '文本生成',
-        introduce: '一键生成精美文本，满足不同创作需求。',
-        imgUrl: '/src/assets/images/logo.png',
+        name: '工作周报',
+        introduce: '高质量汇报本周工作情况。',
+        imgUrl: '/src/assets/images/weekly-report.png',
         formItems: [
             {
-                label: '生成内容',
-                prop: 'content',
-                type: 'textarea',
-                placeholder: '请输入生成内容',
+                label: '岗位/职务',
+                prop: 'job',
+                type: 'input',
+                placeholder: '请输入通知主题',
                 rules: {
                     required: true,
-                    message: '请输入对话内容',
-                }
+                    message: '请输入你的岗位/职务',
+                },
+                collectValue: '',
+                exampleValue: '前端开发工程师',
+            },
+            {
+                label: '本周工作内容',
+                prop: 'weeklyContent',
+                type: 'textarea',
+                placeholder: '简要描述本周工作成果/内容',
+                rules: {
+                    required: true,
+                    message: '请输入本周工作内容',
+                },
+                collectValue: '',
+                exampleValue: '完成AI创作的文本类功能开发',
             }
         ]
     },
-    {
-        id: 5,
-        name: '文本生成',
-        introduce: '一键生成精美文本，满足不同创作需求。',
-        imgUrl: '/src/assets/images/logo.png',
-        formItems: [
-            {
-                label: '生成内容',
-                prop: 'content',
-                type: 'textarea',
-                placeholder: '请输入生成内容',
-                rules: {
-                    required: true,
-                    message: '请输入对话内容',
-                }
-            }
-        ]
-    }
 ]

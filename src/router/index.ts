@@ -1,41 +1,49 @@
 import { createRouter,createWebHashHistory } from "vue-router";
 
+import Home from '../views/Home.vue'
+import Text from '../views/text/Text.vue'
+import Picture from '../views/picture/Picture.vue'
+import PictureCreate from '../views/picture/PictureCreate.vue'
+import PictureCollect from '../views/picture/PictureCollect.vue'
+import PictureStar from '../views/picture/PictureStar.vue'
+import File from '../views/file/File.vue'
 
 const routes = [
     {
         name: 'home',   
         path: '/home',  
-        component: () => import('../views/Home.vue')  
+        component:Home  
     },
     {
         name: 'text',   
         path: '/ai_text',  
-        component: () => import('../views/text/Text.vue')  
-    },{
+        component: Text 
+    },
+    {
         name: 'picture',   
         path: '/ai_picture/',  
-        component: () => import('../views/picture/Picture.vue'),
+        component: Picture,
         children: [
             {
                 name: 'picture_create',
                 path: '/ai_picture/create',
-                component: () => import('../views/picture/PictureCreate.vue')
+                component: PictureCreate
             },
             {
                 name: 'picture_collect',
                 path: '/ai_picture/collect',
-                component: () => import('../views/picture/PictureCollect.vue')
+                component: PictureCollect
             },
             {
                 name: 'picture_star',
                 path: '/ai_picture/star',
-                component: () => import('../views/picture/PictureStar.vue')
+                component: PictureStar
             }
         ]
     },{
         name: 'file',   
         path: '/ai_file',  
-        component: () => import('../views/file/File.vue')  
+        component: File  
     },
     {
         path: '/',

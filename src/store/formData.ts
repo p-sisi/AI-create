@@ -60,4 +60,11 @@ export const useFormDataStore = defineStore('formData',{
             this.selectedTemp = temp;
         }
     },
+    // 持久化配置
+    persist: [   
+        {
+            key: 'text-store',    
+            storage: sessionStorage   
+        }
+    ]  
 })

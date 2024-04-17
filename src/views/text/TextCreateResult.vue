@@ -56,7 +56,7 @@ import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { RESULT } from '@/content'
 
-const isLoading = ref(true);   //页面加载
+const isLoading = ref(false);   //页面加载
 
 //复制
 const handleCopy = (text: string) => {
