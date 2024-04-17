@@ -95,7 +95,7 @@
             
 
             <!-- 生成按钮 -->
-            <div class="create-btn" @click="handleCreate()">
+            <div class="create-btn" @click="handleCreate()" :class="{ 'is-creating': isCreating }">
                 <div>{{ isCreating ? '正在生成中' : '立即生成' }}</div>
                 <div>
                     <div class="ai-edit iconfont" v-if="!isCreating"></div>
@@ -111,7 +111,7 @@ import { ref, onMounted } from 'vue';
 import { useFormDataStore } from '@/store';
 import { ArrowRight, Loading } from '@element-plus/icons-vue'    
 import { CREATION_TEMPLATE } from '@/content/createTemp'
-import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 
 const formDataStore = useFormDataStore()
 
@@ -156,7 +156,8 @@ const isCreating = ref(false);
  *  点击开始创作按钮
  */
 const handleCreate = async () => {
-    // isCreating.value = true;
+    if(isCreating.value == true) return ElMessage.warning('正在生成中，请稍等');
+    isCreating.value = true;
 }
 
 const changeInputValue = (item: any) => {
@@ -391,8 +392,13 @@ onMounted(() => {
                 margin-left: 4px;
             }
         }
-        .create-btn:hover {
+        .create-btn:hover{
             background: linear-gradient(to right, #c269e7, #7ce6e8);
+        }
+        //生成状态按钮样式
+        .is-creating {
+            background: linear-gradient(to right, #c269e7, #7ce6e8)!important;
+            cursor: not-allowed!important;
         }
     }
 }

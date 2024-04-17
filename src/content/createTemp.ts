@@ -97,4 +97,28 @@ export const CREATION_TEMPLATE = [
             }
         ]
     },
+    {
+        id: 5,
+        name: '文章撰写',
+        introduce: '提供文章主题，帮你完成一篇文章',
+        imgUrl: '/src/assets/images/article.png',
+        formItems: [
+            {
+                label: '文章主题',
+                prop: 'theme',
+                type: 'textarea',
+                placeholder: '请简要描述文章主题',
+                collectValue: '',
+                exampleValue: '学校的特色',
+            },
+            {
+                label: '字数限制',
+                prop: 'num',
+                type: 'input',
+                placeholder: '请输入文章字数限制',
+                collectValue: '',
+                exampleValue: '200',
+            },
+        ]
+    },
 ]
