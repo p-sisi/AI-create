@@ -28,46 +28,77 @@
     <!-- 注册登录弹窗 -->
     <div class="dialog-class">
         <el-dialog 
-        v-model="dialogVisible" 
-        width="600" class="dialog" 
-        style="--el-dialog-bg-color:#1a1a23;--el-dialog-border-radius:20px;"
-        modal-class="dialog-modal"
+            v-model="dialogVisible" 
+            width="600" class="dialog" 
+            style="--el-dialog-bg-color:#1a1a23;--el-dialog-border-radius:20px;"
+            modal-class="dialog-modal"
         >
             <div class="dialog-header">
                 <img src="/src/assets/images/logo.png" alt="">
                 <span>AI创作</span>
             </div>
-            <!-- 登录 -->
+
+            <!-- 登录模块 -->
             <div v-if="isLoginStatus">
                 <div class="login-email" @click="loginByEmail()" v-if="!isLoginByEmail">
                     <span class="iconfont ai-youxiang"></span>
                     邮箱登录 >
                 </div>
-                <div class="login-account" @click="loginByAccount()" v-else>
-                    < 账号登录
+                <div class="login-account" @click="loginByAccount()" v-else>< 账号登录</div>
+                <div class="login-input">
+                    <div class="account">
+                        <span>{{isLoginByEmail ? '邮  箱：' : '账号：'}}</span>
+                        <span v-if="!isLoginByEmail"><el-input v-model="inputAccount" style="width: 300px;" placeholder="请输入账号" class="input-account"/></span>
+                        <span v-else><el-input ref="inputEmailRef" v-model="inputEmail" style="width: 300px;" placeholder="请输入邮箱号" class="input-account"/></span>
+                    </div>
+                    <div class="password">
+                        <span>{{isLoginByEmail ? '验证码：' : '密码：'}}</span>
+                        <span v-if="!isLoginByEmail"><el-input v-model="inputPassword" style="width: 300px" placeholder="请输入账号" type="password" class="input-account"/></span>
+                        <div v-else class="code">
+                            <span><el-input v-model="inputCode" style="width: 300px" placeholder="请输入验证码" class="input-account"/></span>
+                            <div class="code-num" @click="handleSentCode()" :class="{'code-num-active': isSending}">发送验证码</div>
+                        </div>
+                    </div>
                 </div>
-                    <div class="login-input">
-                        <div class="account">
-                            <span>{{isLoginByEmail ? '邮  箱：' : '账号：'}}</span>
-                            <span v-if="!isLoginByEmail"><el-input v-model="inputAccount" style="width: 300px;" placeholder="请输入账号" class="input-account"/></span>
-                            <span v-else><el-input ref="inputEmailRef" v-model="inputEmail" style="width: 300px;" placeholder="请输入邮箱号" class="input-account"/></span>
+                <div class="login-btn">
+                    <el-button type="primary" round style="width: 300px;height: 40px;color: #fff;" color="#938af5" @click="handleLogin()">登  录</el-button>
+                </div>
+                <div class="login-footer">
+                    <span>还没有账号？</span>
+                    <span style="color: #938af5;cursor: pointer;" @click="isLoginStatus = false">去注册</span>
+                </div>
+            </div>
+
+            <!-- 注册模块 -->
+            <div v-else>
+                <div class="login-input">
+                    <div class="account">
+                        <span>用户名：</span>
+                        <span ><el-input ref="inputNameRef" v-model="inputName" style="width: 300px;" placeholder="请输入用户名" class="input-account"/></span>
+                    </div>
+                    <div class="account">
+                        <span>账号：</span>
+                        <span ><el-input ref="inputAccountRef" v-model="inputAccount" style="width: 300px;" placeholder="请输入账号" class="input-account"/></span>
+                    </div>
+                    <div class="account">
+                        <span>密码：</span>
+                        <span ><el-input ref="inputPasswordRef" v-model="inputPassword" style="width: 300px;" placeholder="请输入密码" class="input-account" type="password"/></span>
+                    </div>
+                    <div class="password">
+                        <span>验证码：</span>
+                        <div class="code">
+                            <span><el-input ref="inputCodeRef" v-model="inputCode" style="width: 300px" placeholder="请输入验证码" class="input-account"/></span>
+                            <div class="code-num" @click="handleSentCode()" :class="{'code-num-active': isSending}">发送验证码</div>
                         </div>
-                        <div class="password">
-                            <span>{{isLoginByEmail ? '验证码：' : '密码：'}}</span>
-                            <span v-if="!isLoginByEmail"><el-input v-model="inputPassword" style="width: 300px" placeholder="请输入账号" type="password" class="input-account"/></span>
-                            <div v-else class="code">
-                                <span><el-input v-model="inputCode" style="width: 300px" placeholder="请输入验证码" class="input-account"/></span>
-                                <div class="code-num" @click="handleSentCode()" :class="{'code-num-active': isSending}">发送验证码</div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="login-btn">
-                        <el-button type="primary" round style="width: 300px;height: 40px;color: #fff;" color="#938af5" @click="handleLogin()">登录</el-button>
-                    </div>
-                    <div class="login-footer">
-                        <span>还没有账号？</span>
-                        <span style="color: #938af5;cursor: pointer;" @click="isLoginStatus = false">去注册</span>
-                    </div>
+                </div>
+                <div class="login-btn">
+                    <el-button type="primary" round style="width: 300px;height: 40px;color: #fff;" color="#938af5" @click="handleSign()">注  册</el-button>
+                </div>
+                <div class="login-footer">
+                    <span>已有账号？</span>
+                    <span style="color: #938af5;cursor: pointer;" @click="isLoginStatus = true">去登录</span>
+                </div>
             </div>
         </el-dialog>
     </div>
@@ -91,6 +122,8 @@ const handleClickLoginIn = () => {
     isLoginStatus.value = true;
 }
 
+
+const inputName = ref('');           // 输入的用户名
 const inputAccount = ref('');       // 输入的账号
 const inputPassword = ref('');      //输入的密码
 const inputEmail = ref('');        // 输入的邮箱
@@ -113,6 +146,33 @@ const clickMenu = (type: string) => {
 const handleLogin = () => {
     if(inputAccount.value == '' || inputPassword.value == ''){
         return ElMessage.error('账号密码不能为空')
+    }
+}
+
+const inputNameRef = ref(null);
+const inputAccountRef = ref(null);
+const inputCodeRef = ref(null);
+const inputPasswordRef = ref(null);
+
+//注册
+const handleSign = () => {
+    if(inputName.value == ''){
+        inputNameRef.value.focus();
+        ElMessage.error('用户名不能为空')
+        return
+    }
+    if(inputAccount.value == ''){
+        inputAccountRef.value.focus();
+        ElMessage.error('账号不能为空')
+        return
+    }
+    if(inputPassword.value == ''){
+        inputPasswordRef.value.focus();
+        ElMessage.error('密码不能为空')
+        return
+    }
+    if(inputCode.value == ''){
+        return ElMessage.error('验证码不能为空')
     }
 }
 
