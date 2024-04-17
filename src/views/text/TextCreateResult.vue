@@ -19,7 +19,23 @@
                     </div>
                 </template>
                 <template #default>
-                    <!-- 加载完成数据 -->
+                    <!-- 创作结果生成中时的中间状态：开始创作出现骨架屏，请求结果回来后开始打字 -->
+                    <div class="result-dialogue" v-if="formDataStore.isCreating">
+                        <div class="dialogue-question">
+                            <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
+                            <img :src="formDataStore.selectedTemp.imgUrl" alt="">
+                            <div>{{ formDataStore.selectedTemp.name }}</div>
+                        </div>
+                        <div class="dialogue-answer">
+                           <div class="create-skeleton" v-if="formDataStore.isCreating">
+                                <el-skeleton :rows="3" animated />
+                           </div>
+                           <div>
+                                <span>打字状态</span>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- 历史记录数据 -->
                     <div 
                         class="result-dialogue" 
                         v-for="item in RESULT"
@@ -55,6 +71,9 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { RESULT } from '@/content'
+import { useFormDataStore } from '@/store';
+
+const formDataStore = useFormDataStore();
 
 const isLoading = ref(false);   //页面加载
 
@@ -71,6 +90,7 @@ const handleCopy = (text: string) => {
 
 //收藏
 const handleCollect = (item: any) => {
+    //发送收藏请求，请求结束后重新请求列表
     ElMessage.success('点击收藏')
 }
 
@@ -80,7 +100,7 @@ const handleUnCollect = (item: any) => {
 }
 
 onMounted(() => {
-    //TODO:获取历史记录后，将isLoading设置为false
+    //TODO:获取历史记录后，将isLoading设置为false，这个是全部页面的加载状态
     // isLoading.value = false;
 })
 </script>
@@ -110,16 +130,16 @@ onMounted(() => {
             margin: 10px 20px;
             .dialogue-question {
                 display: flex;
+                gap: 6px;
                 flex-flow: row nowrap;
+                align-items: center;
+                justify-content: flex-start;
                 height: 50px;
+                padding-left: 10px;
                 border-bottom: 1px solid #bd70e6;
                 img {
-                    margin: 4px 8px 0px 10px;
-                    width: 40px;
-                    height: 40px;
-                }
-                div {
-                    margin-top: 12px;
+                    width: 25px;
+                    height: 25px;
                 }
             }
             .dialogue-answer {
@@ -149,5 +169,11 @@ onMounted(() => {
 ::v-deep .el-skeleton {
     --el-skeleton-color: #0b0a0c93;
     --el-skeleton-to-color: #0b0a0c31;
+}
+.create-skeleton {
+    ::v-deep .el-skeleton {
+        --el-skeleton-color: #303032;
+        --el-skeleton-to-color: #3030328e;
+    }
 }
 </style>

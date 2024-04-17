@@ -158,6 +158,9 @@ const isCreating = ref(false);
 const handleCreate = async () => {
     if(isCreating.value == true) return ElMessage.warning('正在生成中，请稍等');
     isCreating.value = true;
+    formDataStore.setIsCreating(true);
+
+    //TODO：整理数据，发送请求，请求返回的数据需要传递到textCreateResult组件中
 }
 
 const changeInputValue = (item: any) => {
