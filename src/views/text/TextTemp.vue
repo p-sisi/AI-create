@@ -58,11 +58,6 @@
                         :key="index"
                         :label="item.label"
                         :prop="item.prop"
-                        :rules="{
-                            required: item.rules.required,
-                            message: `请输入${item.label}`,
-                            trigger: 'change'
-                        }"
                     >
                         <!-- 单行输入框 -->
                         <div  v-if="item.type == 'input'" class="edit-text" @change="changeInputValue(item)">
@@ -100,7 +95,7 @@
             
 
             <!-- 生成按钮 -->
-            <div class="create-btn" @click="handleCreate">
+            <div class="create-btn" @click="handleCreate()">
                 <div>{{ isCreating ? '正在生成中' : '立即生成' }}</div>
                 <div>
                     <div class="ai-edit iconfont" v-if="!isCreating"></div>
@@ -120,20 +115,28 @@ import type { FormInstance, FormRules } from 'element-plus'
 
 const formDataStore = useFormDataStore()
 
-// 是否显示模板列表
-const isShowTempList = ref(false);
+const isShowTempList = ref(false);      // 是否显示模板列表
 
-//插入示例
+/**
+ *  将exampleValue中的值全都匹配到collectValue中，collectValue与表单值双向绑定
+ */
 const handleExample = () => {
     formData.value.formItems.forEach((item: any) => {
         if (item.exampleValue !== undefined && item.exampleValue !== '') {
             item.collectValue = item.exampleValue;
         }
     });
+    console.log('表单数据', formData.value)
 }
 
 //表单数据
-const formData = ref(formDataStore.selectedTemp);
+const formData = ref({
+        id: null,
+        name: '',
+        introduce: '',
+        imgUrl: '',
+        formItems: []
+});
  
 // 单选按钮表单
 const selectTab = (item: any, value: string) => {
@@ -148,15 +151,11 @@ const selectTab = (item: any, value: string) => {
 //生成
 const formRef = ref<FormInstance>()
 const isCreating = ref(false);
-const handleCreate = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formRef.value.validate(async (valid: any) => {
-        if (valid) {
-            console.log('submit!')
-        } else {
-            console.log('表单验证没通过', formData.value)
-        }
-    })
+
+/**
+ *  点击开始创作按钮
+ */
+const handleCreate = async () => {
     // isCreating.value = true;
 }
 
@@ -176,13 +175,16 @@ const updateContainerHeight = () => {
 //切换创作模板
 const handleChangeTemp = (item: any) => {
     isShowTempList.value = false;
+    // 修改store中的储存数据
     formDataStore.setSelectedTemp(item);
-    formData.value = formDataStore.selectedTemp
+
+    formData.value = item;
 }
 
 onMounted(() => {
     updateContainerHeight(); 
     window.addEventListener('resize', updateContainerHeight);
+    formData.value = formDataStore.selectedTemp
 });
 </script>
 

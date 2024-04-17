@@ -11,10 +11,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'articleContent',
                 type: 'textarea',
                 placeholder: '请输入文章内容',
-                rules: {
-                    required: true,
-                    message: '请输入文章内容',
-                },
                 collectValue: '',
                 exampleValue: '这是一段示例文章内容，请替换为你的文章内容。',
             },
@@ -31,10 +27,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'content',
                 type: 'textarea',
                 placeholder: '请输入需要润色的文案',
-                rules: {
-                    required: true,
-                    message: '请输入需要润色的文案',
-                },
                 collectValue: '',
                 exampleValue: '在这个校园里，每天都有新的故事发生。清晨，知识在青春中生根；午后，图书馆是智慧的海洋；黄昏，操场上是青春与梦想的交融。这里，承载着学习、友谊和成长的美好时光。',
             },
@@ -44,10 +36,6 @@ export const CREATION_TEMPLATE = [
                 type: 'selectRadio',
                 placeholder: '请选择文章类型',
                 options: ['不限', '专业严谨', '轻松幽默', '文艺风','随笔'],
-                rules: {
-                    required: true,
-                    message: '请选择创作风格',
-                },
                 collectValue: '',
                 exampleValue: '不限',
             }
@@ -64,10 +52,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'meetTheme',
                 type: 'input',
                 placeholder: '请输入通知主题',
-                rules: {
-                    required: true,
-                    message: '通知主题',
-                },
                 collectValue: '',
                 exampleValue: '季度销售总结',
             },
@@ -76,10 +60,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'meetTime',
                 type: 'input',
                 placeholder: '请输入时间地点',
-                rules: {
-                    required: true,
-                    message: '请输入时间地点',
-                },
                 collectValue: '',
                 exampleValue: '周一下午三点、一楼大会议室',
             },
@@ -88,9 +68,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'meetContent',
                 type: 'textarea',
                 placeholder: '请输入会议内容',
-                rules: {
-                    required: false,
-                },
                 collectValue: '',
                 exampleValue: '',
             },
@@ -107,10 +84,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'job',
                 type: 'input',
                 placeholder: '请输入通知主题',
-                rules: {
-                    required: true,
-                    message: '请输入你的岗位/职务',
-                },
                 collectValue: '',
                 exampleValue: '前端开发工程师',
             },
@@ -119,10 +92,6 @@ export const CREATION_TEMPLATE = [
                 prop: 'weeklyContent',
                 type: 'textarea',
                 placeholder: '简要描述本周工作成果/内容',
-                rules: {
-                    required: true,
-                    message: '请输入本周工作内容',
-                },
                 collectValue: '',
                 exampleValue: '完成AI创作的文本类功能开发',
             }
