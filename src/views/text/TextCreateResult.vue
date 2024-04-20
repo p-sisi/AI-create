@@ -31,7 +31,7 @@
                                 <el-skeleton :rows="3" animated />
                            </div>
                            <div>
-                                <span>打字状态</span>
+                                <Markdown :height="400"  v-dodel="markdownText"/>
                            </div>
                         </div>
                     </div>
@@ -72,6 +72,7 @@ import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { RESULT } from '@/content'
 import { useFormDataStore } from '@/store';
+import { MarkdownPreview } from 'vue-meditor'
 
 const formDataStore = useFormDataStore();
 
@@ -98,6 +99,8 @@ const handleCollect = (item: any) => {
 const handleUnCollect = (item: any) => {
     ElMessage.success('取消收藏')
 }
+
+const markdownText  = ref('```js //简单版 import Markdown from vue-meditor ```');        //markdown中文本
 
 onMounted(() => {
     //TODO:获取历史记录后，将isLoading设置为false，这个是全部页面的加载状态

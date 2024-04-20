@@ -10,3 +10,5 @@ export const store = pinia;
 
 export * from './formData';
 export * from './Picture';
+export * from './common';
+export * from './text';
