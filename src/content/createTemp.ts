@@ -2,25 +2,9 @@
 export const CREATION_TEMPLATE = [
     {
         id: 1,
-        name: '自由对话模式',
-        introduce: '与AI进行自由对话，探索未知领域，获取更多灵感。',
-        imgUrl: '/src/assets/images/temp-free.png',
-        formItems: [
-            {
-                label: '文章内容',
-                prop: 'articleContent',
-                type: 'textarea',
-                placeholder: '请输入文章内容',
-                collectValue: '',
-                exampleValue: '这是一段示例文章内容，请替换为你的文章内容。',
-            },
-        ]
-    },
-    {
-        id: 2,
-        name: '文案润色',
-        introduce: '提升文案品质，打造精彩文字，让您的内容更具吸引力。',
-        imgUrl: '/src/assets/images/wenan-runse.png',
+        title: '文案润色',
+        modelContent: '提升文案品质，打造精彩文字，让您的内容更具吸引力。',
+        modelImg: '/src/assets/images/wenan-runse.png',
         formItems: [
             {
                 label: '需要润色的文案',
@@ -39,13 +23,13 @@ export const CREATION_TEMPLATE = [
                 collectValue: '',
                 exampleValue: '不限',
             }
-        ]
+        ],
     },
     {
-        id: 3,
-        name: '通知撰写',
-        introduce: '智能撰写通知，节省时间提高效率。',
-        imgUrl: '/src/assets/images/notice-temp.png',
+        id: 2,
+        title: '通知撰写',
+        modelContent: '智能撰写通知，节省时间提高效率。',
+        modelImg: '/src/assets/images/notice-temp.png',
         formItems: [
             {
                 label: '通知主题',
@@ -74,10 +58,10 @@ export const CREATION_TEMPLATE = [
         ]
     },
     {
-        id: 4,
-        name: '工作周报',
-        introduce: '高质量汇报本周工作情况。',
-        imgUrl: '/src/assets/images/weekly-report.png',
+        id: 3,
+        title: '工作周报',
+        modelContent: '高质量汇报本周工作情况。',
+        modelImg: '/src/assets/images/weekly-report.png',
         formItems: [
             {
                 label: '岗位/职务',
@@ -98,10 +82,10 @@ export const CREATION_TEMPLATE = [
         ]
     },
     {
-        id: 5,
-        name: '文章撰写',
-        introduce: '提供文章主题，帮你完成一篇文章',
-        imgUrl: '/src/assets/images/article.png',
+        id: 4,
+        title: '文章撰写',
+        modelContent: '提供文章主题，帮你完成一篇文章',
+        modelImg: '/src/assets/images/article.png',
         formItems: [
             {
                 label: '文章主题',

@@ -2,11 +2,11 @@
     <div class="temp">
         <!-- 创作模板列表 -->
         <div class="temp-list" v-if="isShowTempList">
-            <div class="header" @click="isShowTempList = false" v-show="Object.keys(textStore.selectedTemp).length !== 0">
+            <div class="header" @click="isShowTempList = false">
                 <span class="iconfont ai-back"></span>
                 <span>返回编辑</span>
             </div>
-            <el-scrollbar max-height="450px" >
+            <el-scrollbar max-height="458px" >
                 <div 
                     v-for="item in CREATION_TEMPLATE" 
                     :key="item.id" 
@@ -14,11 +14,11 @@
                     @click="handleChangeTemp(item)"
                 >
                     <div class="image">
-                        <img :src="item.imgUrl" alt="">
+                        <img :src="item.modelImg" alt="">
                     </div>
                     <div class="list-detail">
-                        <div class="title">{{ item.name }}</div>
-                        <div class="introduce">{{ item.introduce }}</div>
+                        <div class="title">{{ item.title }}</div>
+                        <div class="introduce">{{ item.modelContent }}</div>
                     </div>
                 </div>
             </el-scrollbar>
@@ -30,8 +30,8 @@
             <div class="form-header">
                 <div class="temp-form-header">
                     <div class="temp-form-int">
-                        <img :src="formData.imgUrl" alt="">
-                        <div>{{ formData.name }}</div>
+                        <img :src="formData.modelImg" alt="">
+                        <div>{{ formData.title }}</div>
                     </div>
                     <div class="header" @click="isShowTempList = true">
                         <div style="margin-top: -3px;margin-right: 8px;">选择创作模板</div>
@@ -95,10 +95,10 @@
             
 
             <!-- 生成按钮 -->
-            <div class="create-btn" @click="handleCreate()" :class="{ 'is-creating': isCreating }">
-                <div>{{ isCreating ? '正在生成中' : '立即生成' }}</div>
+            <div class="create-btn" @click="handleCreate()" :class="{ 'is-creating': isCreating || textStore.isTyping }">
+                <div>{{ isCreating || textStore.isTyping ? '正在生成中' : '立即生成' }}</div>
                 <div>
-                    <div class="ai-edit iconfont" v-if="!isCreating"></div>
+                    <div class="ai-edit iconfont" v-if="!isCreating && !textStore.isTyping"></div>
                     <el-icon class="is-loading" v-else><Loading /></el-icon>
                 </div>
             </div>
@@ -107,12 +107,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { useTextStore } from '@/store';
 import { ArrowRight, Loading } from '@element-plus/icons-vue'    
 import { CREATION_TEMPLATE } from '@/content/createTemp'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import { fetchAllTemp } from '../../apis/temp'
+import { fetchAllTemp, fetchTempChat } from '../../apis/temp'
 
 const textStore = useTextStore()
 
@@ -125,7 +125,7 @@ const tempDataList = ref();         //请求获取到的模板列表信息
  */
 const getTempDataListRequest = async () => {
     try {
-        const result = await fetchAllTemp;
+        const result = await fetchAllTemp();
         tempDataList.value = result;
     } catch (error: any) {
         ElMessage.error(error.message);
@@ -133,7 +133,7 @@ const getTempDataListRequest = async () => {
 }
 
 /**
- *  将exampleValue中的值全都匹配到collectValue中，collectValue与表单值双向绑定
+ *  点击插入示例：将exampleValue中的值全都匹配到collectValue中，collectValue与表单值双向绑定
  */
 const handleExample = () => {
     formData.value.formItems.forEach((item: any) => {
@@ -141,17 +141,10 @@ const handleExample = () => {
             item.collectValue = item.exampleValue;
         }
     });
-    console.log('表单数据', formData.value)
 }
 
 //表单数据
-const formData = ref({
-        id: null,
-        name: '',
-        introduce: '',
-        imgUrl: '',
-        formItems: []
-});
+const formData = ref();
  
 // 单选按钮表单
 const selectTab = (item: any, value: string) => {
@@ -171,11 +164,51 @@ const isCreating = ref(false);
  *  点击开始创作按钮
  */
 const handleCreate = async () => {
-    if(isCreating.value == true) return ElMessage.warning('正在生成中，请稍等');
+    if(isCreating.value == true || textStore.isTyping) return ElMessage.warning('正在生成中，请稍等');
+
+    //处理表单内容，生成提示词，因为模板用户输入由前端来收集并组成user提示词
+    const formItemsLabelsAndValues = formData.value.formItems.map((item:any) => `${item.label}: ${item.collectValue}`);
+    const combinedString = formItemsLabelsAndValues.join(', ');
+    console.log('收集的信息', combinedString)
+    //状态设置为  生成中，非打字
     isCreating.value = true;
     textStore.setIsCreating(true);
 
-    //TODO：整理数据，发送请求，请求返回的数据需要传递到textCreateResult组件中
+    //发送对话请求
+    const params = {
+        modelId: formData.value.id,
+        question: combinedString
+    }
+    // const result  = await fetchTempChat(params);
+    //状态设置为：生成结束，打字中
+
+    
+    const timer = setTimeout(async() => {
+        // 模拟请求正在发送中
+        textStore.setIsCreating(false);
+        isCreating.value = false;
+
+        //开始打字
+        textStore.setActiveTypeText('');
+        // 设置打字的文本，即请求回来的answer
+        const typeText = '我正在打字'
+        await nextTick();
+        //设置打字状态开始
+        textStore.setIsTyping(true);
+
+        let i = 0;
+        const timer2 = setInterval(async () => {
+            //不断往文本中增加内容
+            textStore.setActiveTypeText(textStore.activeTypeText + typeText.charAt(i));
+            await nextTick();
+            i++;
+            if (i > typeText.length) {
+                //打字结束，设置打字状态为false，清除打字计时器
+                textStore.setIsTyping(false);
+                clearInterval(timer2);
+            }
+        }, 500);//50:打字速度
+    }, 3000);
 }
 
 const changeInputValue = (item: any) => {
@@ -228,6 +261,8 @@ onMounted(() => {
 .temp {
     .temp-list {
         cursor: pointer;
+        height: 100%;
+        padding: 10px;
         .temp-list-body {
             display: flex;
             flex-flow: row nowrap;
@@ -280,6 +315,7 @@ onMounted(() => {
                 .temp-form-int {
                     display: flex;
                     flex-direction: row;
+                    align-items: center;
                     img {
                         width: 28px;
                         height: 28px;
