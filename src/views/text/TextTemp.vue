@@ -169,46 +169,40 @@ const handleCreate = async () => {
     //处理表单内容，生成提示词，因为模板用户输入由前端来收集并组成user提示词
     const formItemsLabelsAndValues = formData.value.formItems.map((item:any) => `${item.label}: ${item.collectValue}`);
     const combinedString = formItemsLabelsAndValues.join(', ');
-    console.log('收集的信息', combinedString)
+
     //状态设置为  生成中，非打字
     isCreating.value = true;
     textStore.setIsCreating(true);
+    textStore.setIsTyping(false);
 
     //发送对话请求
     const params = {
         modelId: formData.value.id,
         question: combinedString
     }
-    // const result  = await fetchTempChat(params);
+    const result  = await fetchTempChat(params);
+
     //状态设置为：生成结束，打字中
+    textStore.setIsCreating(false);
+    isCreating.value = false;
+    textStore.setActiveTypeText('');
+    const typeText = result.data.answer;
+    await nextTick();
 
-    
-    const timer = setTimeout(async() => {
-        // 模拟请求正在发送中
-        textStore.setIsCreating(false);
-        isCreating.value = false;
-
-        //开始打字
-        textStore.setActiveTypeText('');
-        // 设置打字的文本，即请求回来的answer
-        const typeText = '我正在打字'
+    //开始打字
+    textStore.setIsTyping(true);
+    let i = 0;
+    const timer2 = setInterval(async () => {
+        //不断往文本中增加内容
+        textStore.setActiveTypeText(textStore.activeTypeText + typeText.charAt(i));
         await nextTick();
-        //设置打字状态开始
-        textStore.setIsTyping(true);
-
-        let i = 0;
-        const timer2 = setInterval(async () => {
-            //不断往文本中增加内容
-            textStore.setActiveTypeText(textStore.activeTypeText + typeText.charAt(i));
-            await nextTick();
-            i++;
-            if (i > typeText.length) {
-                //打字结束，设置打字状态为false，清除打字计时器
-                textStore.setIsTyping(false);
-                clearInterval(timer2);
-            }
-        }, 500);//50:打字速度
-    }, 3000);
+        i++;
+        if (i > typeText.length) {
+            //打字结束，设置打字状态为false，清除打字计时器
+            textStore.setIsTyping(false);
+            clearInterval(timer2);
+        }
+    }, 50);//50:打字速度
 }
 
 const changeInputValue = (item: any) => {
@@ -235,7 +229,9 @@ const handleChangeTemp = (item: any) => {
 
 onMounted(() => {
     getTempDataListRequest();
-
+    //初始化非生成、非打字
+    textStore.setIsCreating(false);
+    textStore.setIsTyping(false);
     updateContainerHeight(); 
     window.addEventListener('resize', updateContainerHeight);
     formData.value = textStore.selectedTemp

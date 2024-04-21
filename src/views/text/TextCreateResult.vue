@@ -30,7 +30,7 @@
                            <div class="create-skeleton" v-if="textStore.isCreating || textStore.isTyping">
                                 <el-skeleton :rows="3" animated  v-if="textStore.isCreating "/>
                                 <!-- 打字状态的文本generateResult -->
-                                <div v-if="textStore.isTyping">{{ generateResult }}</div>
+                                <div v-if="textStore.isTyping == true">{{ generateResult }}</div>
                            </div>
                            <div>
                                 
