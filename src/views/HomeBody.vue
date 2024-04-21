@@ -96,7 +96,7 @@ const StartToCreate = (item: any) => {
     //未登录，拦截
     if(!localStorage.getItem('Token')) return ElMessage.error('请先登录')
     //已登录，跳转
-    if(item.id == 1) router.push('/ai_text')
+    if(item.id == 1) router.push('/ai_text/select')
     if(item.id == 2) router.push('/ai_picture')
     if(item.id == 3) router.push('/ai_file')
 }

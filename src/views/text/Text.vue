@@ -28,39 +28,9 @@
             </div>
         </el-affix>
 
-        <div class="body" v-if="isShowCreate">
-            <div v-if="isSelectType" class="body-select">
-                <div style="display: flex;align-items: center;gap: 10px;margin-top: 30px;">
-                    <img src="../../assets/images/logo.png" alt="">
-                    <span class="select-title">你的智能化平台</span>
-                </div>
-                <div class="select-btn">
-                    <div class="select-btn-mul" @click="clickMul">多轮对话</div>
-                    <div class="select-btn-temp" @click="clickTemp">模板快速创作</div>
-                </div>
-            </div>
-            <div v-else style="padding: 10px 20px;">
-                <!-- 多轮对话 -->
-                <div v-if="!textStore.isSelectedTemp">
-                    <MultipleText></MultipleText>
-                </div>
-                <!-- 模板对话 -->
-                <div v-else class="body-temp-create">
-                    <!-- 创作区 -->
-                    <div class="body-temp">
-                        <TextTemp></TextTemp>
-                    </div>
-                    <!-- 结果区 -->
-                    <div class="body-result">
-                        <TextCreateResult></TextCreateResult>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- 我的收藏 -->
-        <div class="collect" v-else>
-            <TextCollect></TextCollect>
+        <div class="body">
+            <!-- 文本类子路由出口 -->
+            <router-view></router-view>
         </div>
     </div>
 
@@ -83,15 +53,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import router from '@/router/index.ts';
-import TextTemp from './TextTemp.vue';
-import TextCreateResult from './TextCreateResult.vue';
-import TextCollect from './TextCollect.vue';
-import MultipleText from './MultipleText.vue';
-import {useTextStore, useCommonStore } from '../../store'
+import { useCommonStore } from '../../store'
 import { ElMessage } from 'element-plus';
 import { fetchLoginOut } from '../../apis/user'
 
-const textStore = useTextStore();
 const commonStore = useCommonStore();
 
 const handleBackToHome = () => {
@@ -111,28 +76,16 @@ const tabMenu = [
         name: 'collect'
     }
 ]
+
 const activeMenu = ref('创作区')
 const handleClickMenu = (item : any) => {
     if(item.label === activeMenu.value)  return 
-    isShowCreate.value = !isShowCreate.value
     activeMenu.value = item.label
-}
-
-//是否展示创作区
-const isShowCreate = ref(true)
-
-const isSelectType = ref(true);    //是否在选择多轮对话、模板创作
-
-//点击了多轮对话
-const clickMul  = () => {
-    isSelectType.value = false;
-    textStore.setIsSelectTemp(false);
-}
-
-//点击了模板创作
-const clickTemp = () => {
-    isSelectType.value = false;
-    textStore.setIsSelectTemp(true);
+    if(activeMenu.value === '创作区') {
+        router.push('/ai_text/select')
+    } else {
+        router.push('/ai_text/collect')
+    }
 }
 
 /**
@@ -146,9 +99,12 @@ const loginOutRequest = async() => {
         })
         localStorage.removeItem('Token');
         ElMessage.success('退出登录成功')
+        //清除store中数据
         commonStore.setHasLogin(false);
         commonStore.setUserInfo({});
+
         loginOutdialogVisible.value = false;
+        
         router.push('/home')
     } catch (error: any) {
         ElMessage.error(error.message)
@@ -238,65 +194,7 @@ const loginOutRequest = async() => {
         display: flex;
         flex-direction: row;
         gap: 20px;
-        height: calc(100% - 80px);
-        .body-select {
-            height: 90vh;
-            width: 100%;
-            display: flex;
-            flex-flow: column nowrap;
-            align-items: center;
-            background: linear-gradient(to bottom, #0f1012, #33243e);
-            .select-title {
-                font-size: 30px;
-            }
-            img {
-                width: 80px;
-            }
-            .select-btn {
-                margin-top: 40px;
-                display: flex;
-                gap: 20px;
-                font-size: 20px;
-                .select-btn-mul {
-                    padding: 10px 20px;
-                    border: 1px solid #bd70e6;
-                    border-radius: 30px;
-                    transition: all .4s;
-                    cursor: pointer;
-                }
-                .select-btn-mul:hover {
-                    background-color: #bd70e6;
-                    padding: 10px 30px;
-                }
-                .select-btn-temp {
-                    padding: 10px 20px;
-                    background-color: #b93bed;
-                    border-radius: 30px;
-                    transition: all .4s;
-                    cursor: pointer;
-                }
-                .select-btn-temp:hover {
-                    padding: 10px 30px;
-                }
-            }
-        }
-        .body-temp-create {
-            display: flex;
-            flex-direction: row;
-            height: 100%;
-            gap: 20px;
-            .body-temp {
-                width: 400px;
-                padding: 8px;
-                background: #0b0a0c;
-                border-radius: 10px;
-            }
-            .body-result {
-                width: 900px;
-                padding: 8px;
-                border-radius: 10px;
-            }
-        }
+        height: calc(100% - 50px); 
     }
 }
 </style>

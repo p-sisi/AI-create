@@ -3,12 +3,11 @@
 </template>
 
 <script setup lang="ts">
-import {useTextStore } from '../../store'
-
-const textStore = useTextStore();
+import router from '@/router/index.ts';
 
 const handleBackTemp = () => {
-    textStore.setIsSelectTemp(true);
+    //跳转至模板创作
+    router.push('/ai_text/temp');
 }
 </script>
 

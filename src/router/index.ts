@@ -8,18 +8,46 @@ import PictureCollect from '../views/picture/PictureCollect.vue'
 import PictureStar from '../views/picture/PictureStar.vue'
 import File from '../views/file/File.vue'
 
+//文本类
+import Select from '../views/text/Select.vue'
+import TempCreate from '../views/text/TempCreate.vue'
+import MultipleText from "../views/text/MultipleText.vue";
+import Collect from '../views/text/TextCollect.vue'
+
 const routes = [
     {
         name: 'home',   
         path: '/home',  
         component:Home  
     },
-    {
+    {   //文本类
         name: 'text',   
         path: '/ai_text',  
-        component: Text 
+        component: Text ,
+        children: [
+            {
+                name: 'text-select',
+                path: '/ai_text/select',
+                component: Select
+            },
+            {
+                name: 'text-temp',
+                path: '/ai_text/temp',
+                component: TempCreate
+            },
+            {
+                name: 'text-mul',
+                path: '/ai_text/multiple',
+                component: MultipleText
+            },
+            {
+                name: 'text-collect',
+                path: '/ai_text/collect',
+                component: Collect
+            },
+        ]
     },
-    {
+    {   //图片类
         name: 'picture',   
         path: '/ai_picture/',  
         component: Picture,

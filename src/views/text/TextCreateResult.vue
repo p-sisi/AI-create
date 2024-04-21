@@ -20,14 +20,14 @@
                 </template>
                 <template #default>
                     <!-- 创作结果生成中时的中间状态：开始创作出现骨架屏，请求结果回来后开始打字 -->
-                    <div class="result-dialogue" v-if="formDataStore.isCreating">
+                    <div class="result-dialogue" v-if="textStore.isCreating">
                         <div class="dialogue-question">
                             <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
-                            <img :src="formDataStore.selectedTemp.imgUrl" alt="">
-                            <div>{{ formDataStore.selectedTemp.name }}</div>
+                            <img :src="textStore.selectedTemp.imgUrl" alt="">
+                            <div>{{ textStore.selectedTemp.name }}</div>
                         </div>
                         <div class="dialogue-answer">
-                           <div class="create-skeleton" v-if="formDataStore.isCreating">
+                           <div class="create-skeleton" v-if="textStore.isCreating">
                                 <el-skeleton :rows="3" animated />
                            </div>
                            <div>
@@ -71,10 +71,10 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { RESULT } from '@/content'
-import { useFormDataStore } from '@/store';
+import { useTextStore } from '@/store';
 import { MarkdownPreview } from 'vue-meditor'
 
-const formDataStore = useFormDataStore();
+const textStore = useTextStore();
 
 const isLoading = ref(false);   //页面加载
 

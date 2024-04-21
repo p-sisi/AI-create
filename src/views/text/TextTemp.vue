@@ -2,7 +2,7 @@
     <div class="temp">
         <!-- 创作模板列表 -->
         <div class="temp-list" v-if="isShowTempList">
-            <div class="header" @click="isShowTempList = false">
+            <div class="header" @click="isShowTempList = false" v-show="Object.keys(textStore.selectedTemp).length !== 0">
                 <span class="iconfont ai-back"></span>
                 <span>返回编辑</span>
             </div>
@@ -108,14 +108,29 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useFormDataStore } from '@/store';
+import { useTextStore } from '@/store';
 import { ArrowRight, Loading } from '@element-plus/icons-vue'    
 import { CREATION_TEMPLATE } from '@/content/createTemp'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { fetchAllTemp } from '../../apis/temp'
 
-const formDataStore = useFormDataStore()
+const textStore = useTextStore()
 
-const isShowTempList = ref(false);      // 是否显示模板列表
+const isShowTempList = ref(true);      // 是否显示模板列表
+
+const tempDataList = ref();         //请求获取到的模板列表信息
+
+/**
+ *  获取模板列表请求
+ */
+const getTempDataListRequest = async () => {
+    try {
+        const result = await fetchAllTemp;
+        tempDataList.value = result;
+    } catch (error: any) {
+        ElMessage.error(error.message);
+    }
+}
 
 /**
  *  将exampleValue中的值全都匹配到collectValue中，collectValue与表单值双向绑定
@@ -158,7 +173,7 @@ const isCreating = ref(false);
 const handleCreate = async () => {
     if(isCreating.value == true) return ElMessage.warning('正在生成中，请稍等');
     isCreating.value = true;
-    formDataStore.setIsCreating(true);
+    textStore.setIsCreating(true);
 
     //TODO：整理数据，发送请求，请求返回的数据需要传递到textCreateResult组件中
 }
@@ -180,15 +195,17 @@ const updateContainerHeight = () => {
 const handleChangeTemp = (item: any) => {
     isShowTempList.value = false;
     // 修改store中的储存数据
-    formDataStore.setSelectedTemp(item);
+    textStore.setSelectedTemp(item);
 
     formData.value = item;
 }
 
 onMounted(() => {
+    getTempDataListRequest();
+
     updateContainerHeight(); 
     window.addEventListener('resize', updateContainerHeight);
-    formData.value = formDataStore.selectedTemp
+    formData.value = textStore.selectedTemp
 });
 </script>
 
