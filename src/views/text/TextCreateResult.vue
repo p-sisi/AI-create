@@ -63,7 +63,7 @@
                             </div>
                             <div>
                                 <span class="iconfont ai-no-collect" v-if="item.collect == false" @click="handleCollect(item)"></span>
-                                <span class="iconfont ai-collect" v-if="item.collect == true" @click="handleUnCollect(item)"></span>
+                                <span class="iconfont ai-collect" v-if="item.collect == true" @click="handleCancelCollect(item)"></span>
                                 <el-divider direction="vertical" />
                                 <span class="iconfont ai-copy" @click="handleCopy(item.answer)"></span>
                                 <el-divider direction="vertical" />
@@ -98,6 +98,7 @@ import { getStringTime } from '../../utils/index'
 import { useTextStore } from '@/store';
 import { MarkdownPreview } from 'vue-meditor'
 import { fetchAllTempHistory, fetchDeleteTempHistory  } from '../../apis/temp'
+import { fetchCollectTemp, fetchCancelCollectTemp  } from '../../apis/collect'
 
 const textStore = useTextStore();
 
@@ -153,22 +154,50 @@ const handleDelete = async(item: any) => {
     }
 }
 
-//收藏
-const handleCollect = (item: any) => {
-    //发送收藏请求，请求结束后重新请求列表
-    ElMessage.success('点击收藏')
+/**
+ *  收藏
+ */
+const handleCollect = async(item: any) => {
+    try {
+        const params = {
+            answer: item.answer,
+            modelId: item.modelId,
+            question:item.question,
+            recordId: item.id
+        }
+        await  fetchCollectTemp(params)
+        ElMessage.success('收藏成功')
+
+        getTempDataListHistoryRequest()
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
 }
 
-//取消收藏
-const handleUnCollect = (item: any) => {
-    ElMessage.success('取消收藏')
+/**
+ *     取消收藏
+ */
+ const handleCancelCollect = async(item: any) => {
+    try {
+        const params = {
+            recordId: item.id
+        }
+        await  fetchCancelCollectTemp(params)
+        ElMessage.success('取消收藏')
+
+        getTempDataListHistoryRequest()
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
 }
 
 const markdownText  = ref('```js //简单版 import Markdown from vue-meditor ```');        //markdown中文本
 
 onMounted(() => {
-    isLoading.value = false;
-    getTempDataListHistoryRequest();
+    setTimeout(() => {
+        isLoading.value = false;
+        getTempDataListHistoryRequest();
+    }, 2000);   
 })
 </script>
 

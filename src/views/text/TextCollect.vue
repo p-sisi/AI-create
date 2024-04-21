@@ -4,7 +4,7 @@
             <div  ref="animation1"></div>
             正在加载中...
         </div>
-       <div class="collect-container" v-for="item in COLLECTION_LIST" :key="item.id" v-else>
+       <div class="collect-container" v-for="item in collectList" :key="item.id" v-else>
            <div class="title">
             <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片 -->
                 <img src="../../assets/images/logo.png" alt="">
@@ -18,7 +18,7 @@
            </div>
 
            <div class="footer">
-                <div class="footer-time">{{item.createTime}}</div>
+                <div class="footer-time">{{ getStringTime(item.collectTime) }}</div>
                 <div class="footer-icon">
                     <span class="iconfont ai-copy" @click="handleCopy(item.answer)"></span>
                     <el-divider direction="vertical" />
@@ -27,7 +27,6 @@
                         cancel-button-text="取消"
                         title="确定删除该收藏？"
                         @confirm="confirmEvent(item)"
-                        @cancel="cancelEvent(item)"
                     >
                         <template #reference>
                             <span class="iconfont ai-delete"></span>
@@ -40,28 +39,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { COLLECTION_LIST } from '@/content/index'
+import { ref, onMounted, Ref, computed } from 'vue';
+import { TEMP_COLLECT } from '@/content/text'
+import { fetchCollectListText } from '../../apis/collect'
+import { fetchCancelCollectTemp  } from '../../apis/collect'
 import { ElMessage } from 'element-plus';
-import { Loading } from '@element-plus/icons-vue';
 import lottie from 'lottie-web';
 import LoadingCar from '@/assets/images/car-loading.json';
+import { getStringTime } from '../../utils/index'
 
-const isLoading = ref(false);  //页面加载状态
+const isLoading = ref(true);  //页面加载状态
 
+const collectList: Ref<TEMP_COLLECT[]> = ref([]);       //收藏列表
+
+/**
+ *  获取全部的收藏列表
+ */
+const getCollectListRequest = async() => {
+    try {
+        const result = await fetchCollectListText()
+        collectList.value = result.data
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
+}
+
+//复制
 const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text)
         .then(() => {
             ElMessage.success('复制成功')
         })
         .catch((error: any) => {
-            ElMessage.error('复制失败')
+            ElMessage.error(error.message)
         })
 }
 
-const confirmEvent = (item: any) => {
-    console.log('删除收藏',item)
-    ElMessage.success('删除成功')
+/**
+ *    删除收藏
+ */
+ const confirmEvent = async(item: any) => {
+    try {
+        const params = {
+            recordId: item.recordId
+        }
+        await  fetchCancelCollectTemp(params)
+        ElMessage.success('删除成功')
+
+        getCollectListRequest()
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
 }
 
 const animation1 = ref<any>(null) 
@@ -74,18 +102,19 @@ onMounted(() => {
         autoplay: true,  
         animationData: LoadingCar   
     })
-    //TODO:请求收藏数据之后，将isLoading设置为false
-    setTimeout(() => { 
-        isLoading.value = false 
-    }, 5000)
+    setTimeout(() => {
+        isLoading.value = false;
+        getCollectListRequest()
+    }, 1000);   
 })
 </script>
 
 <style lang="scss" scoped>
 .collect {
-    height: 90%;
+    height: 90vh;
     display: flex;
     flex-flow: row wrap;
+    justify-content: flex-start;
     gap: 20px;
     padding: 24px;
     &-loading {
@@ -130,7 +159,8 @@ onMounted(() => {
         }
         .content {
             color: black;
-            height: 290px;
+            max-height: 290px;
+            min-height: 290px;
             padding: 8px;
             font-size: 14px;
             word-wrap: break-word;
