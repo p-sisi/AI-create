@@ -45,10 +45,9 @@
         <div class="container-right">
             <el-scrollbar max-height="520px">
             <div class="result">
-                <!-- 历史记录列表 -->
                 <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
                     <template #template>
-                        <!-- 加载中骨架屏 -->
+                        <!-- 首次进入页面加载中骨架屏 -->
                         <div>
                             <el-skeleton-item variant="h4" style="width: 50%;margin: 10px;" />
                             <el-skeleton-item variant="h4" style="width: 80%;margin: 5px" />
@@ -57,38 +56,55 @@
                         </div>
                     </template>
                     <template #default>
-                        <!-- 加载完成数据 -->
-                        <div class="result-list" v-for="item in resultList">
-                            <div class="result-list-content">{{ item.content }}</div>
+                        <!-- 生成状态中的卡片 -->
+                        <div class="result-list" v-if="isCreating">
+                            <div class="result-list-content">{{ inputText }}</div>
                             <div class="result-list-img">
-                                <el-image 
-                                    :src="value"  
-                                    v-for="value in item.imgUrl" 
-                                    v-if="item.imgUrl.length !== 0" 
-                                    :preview-src-list="item.imgUrl" 
-                                    infinite
-                                    lazy></el-image>
-                                <!-- 生成中骨架屏 -->
-                                <el-skeleton style="width: 100%" loading animated v-else class="skeleton">
+                                <el-skeleton style="width: 100%" loading animated class="skeleton">
                                     <template #template>
                                         <el-skeleton-item variant="image" style="width: 33.3%;height: 200px;" v-for="item in 3"/>
                                     </template>
                                 </el-skeleton>
+                                <!-- <el-image
+                                    v-else 
+                                    :src="`${BASE_URL}/file/images/${value.filename}`"  
+                                    v-for="value in newImageUrl" 
+                                    :preview-src-list="[
+                                        `${BASE_URL}/file/images/${newImageUrl[0].filename}`, `${BASE_URL}/file/images/${newImageUrl[1].filename}`, `${BASE_URL}/file/images/${newImageUrl[2].filename}`]" 
+                                    infinite
+                                    lazy></el-image> -->
+                            </div>
+                        </div>
+                        <!-- 历史记录列表 -->
+                        <div class="result-list" v-for="item in historyData" :key="item.id">
+                            <div class="result-list-content" @click="handleCopy(item.text)">{{ item.text }}</div>
+                            <div class="result-list-img">
+                                <el-image 
+                                    :src="`${BASE_URL}/file/images/${value}`"  
+                                    v-for="value in [item.image1, item.image2, item.image3]" 
+                                    :preview-src-list="[
+                                        `${BASE_URL}/file/images/${item.image1}`, `${BASE_URL}/file/images/${item.image2}`, `${BASE_URL}/file/images/${item.image3}`]" 
+                                    infinite
+                                    lazy>
+                                    <template #placeholder>
+                                        <div class="image-slot">Loading...</div>
+                                    </template>
+                                </el-image>
                             </div>
                             <div class="result-list-footer">
-                                <span>{{ item.createTime }}</span>
-                                    <el-popconfirm
-                                        width="220"
-                                        confirm-button-text="确定"
-                                        cancel-button-text="取消"
-                                        icon-color="#626AEF"
-                                        title="确定删除该条生成记录？删除后无法恢复记录"
-                                        @confirm="handleDeleteHistory(item)"
-                                    >
-                                        <template #reference>
-                                            <span class="iconfont ai-delete"></span>
-                                        </template>
-                                    </el-popconfirm>
+                                <span>{{ getStringTime(item.createTime) }}</span>
+                                <el-popconfirm
+                                    width="220"
+                                    confirm-button-text="确定"
+                                    cancel-button-text="取消"
+                                    icon-color="#626AEF"
+                                    title="确定删除该条生成记录？删除后无法恢复记录"
+                                    @confirm="handleDeleteHistory(item)"
+                                >
+                                    <template #reference>
+                                        <span class="iconfont ai-delete"></span>
+                                    </template>
+                                </el-popconfirm>
                             </div>
                         </div>
                     </template>
@@ -100,77 +116,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, Ref } from 'vue';
+import { TEXT_PICTURE_HISTORY } from '../../content/picture'
+import { BASE_URL } from '../../content/user'
 import { ElMessage } from 'element-plus';
-import { getCurrentTime } from '@/utils/index';
+import { getStringTime } from '@/utils/index';
 import { Loading } from '@element-plus/icons-vue'
+import { fetchHistoryTextTo, fetchTextToPictureCreate, fetchDeleteTextToPictureHistory } from '../../apis/picture'
 
-const isLoading  = ref(true);
+const isLoading  = ref(true);   //页面加载
 
-const resultList = ref([
-    {
-        id: 1,
-        content: '文本内容文本内容',
-        createTime: '2023-12-12 12:12:12',
-        imgUrl: [
-            'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-            'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-            'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-        ],
-        scale: '1:1',
-    },
-    {
-        id: 2,
-        content: '文本内容文本内容',
-        createTime: '2023-12-12 12:12:19',
-        imgUrl: [
-            'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-            'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-            'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-        ],
-        scale:'9:16',
-    },
-    {
-        id: 3,
-        content: '文本内容文本内容',
-        createTime: '2023-12-12 12:12:19',
-        imgUrl: [
-            'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-            'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg',
-            'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg',
-        ],
-        scale:'16:9',
-    },
-])
+const historyData: Ref<TEXT_PICTURE_HISTORY[]> = ref([]);
 
-const inputText = ref('');
+/**
+ *  获取全部历史记录
+ */
+const getAllHistoryRequest = async() => {
+    try {
+        const result = await fetchHistoryTextTo();
+        historyData.value = result.data.reverse();
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
+}
+
+const inputText = ref('');      //用户输入的文本
 
 const handleAddExample = () => {
     inputText.value = '油彩画。很多玫瑰花，壁纸居中，粉黄渐变，玫瑰场景，极高分辨率，暖色光影，自然光，电影光影，整洁。'
+    activeScale.value = '1 : 1'
 }
 
 const SCALE = ['1 : 1','9 : 16','16 : 9'];
-const activeScale = ref('1：1');
+const activeScale = ref('1 : 1');
 const changeScale = (item: string) => {
     if (activeScale.value === item )  return 
     activeScale.value = item;
 }
 
-//开始创作
-const isCreating = ref(false);
+const isCreating = ref(false);      //是否在生成中
 const textInputRef = ref(null);
-const currentTime = ref('');
 
-//生成状态中间数据
-const creatingData = computed(() => {
-    return {
-        content: inputText.value,
-        createTime: currentTime.value,
-        imgUrl: [],
-        scale: activeScale.value,
-    };
-});
+//获取后端需要的照片尺寸参数
+const imageSize = computed(() => {
+    if(activeScale.value == '1 : 1') return '1024*1024'
+    if(activeScale.value == '9 : 16') return '720*1280'
+    if(activeScale.value == '16 : 9') return '1280*720'
+})
 
+/**
+ *  发送创作请求
+ */
 const handleCreate = async () => {
     if(inputText.value === '') {
         textInputRef.value.focus();
@@ -180,35 +176,49 @@ const handleCreate = async () => {
     if(isCreating.value) return ElMessage.warning('请稍后再试，正在生成中...');
     try {
         isCreating.value = true;
-        currentTime.value = getCurrentTime();
-        resultList.value.unshift(creatingData.value)
 
-        console.log('生成结果',resultList.value);
         const params = {
-            inputText: inputText.value,
-            scale: activeScale.value,
+            text: inputText.value,
+            size: imageSize.value,
         }
-        //TODO:发送文本生成图像的请求,结果的图片地址赋值给imgUrl
+        await fetchTextToPictureCreate(params);
+        //返回数据结构  image3 = {filename:'',isSuccess:true}
 
-        //请求结束后
-        // isCreating.value = false;
+        isCreating.value = false;
+        inputText.value = ''
 
+        getAllHistoryRequest();
     } catch (error) {
         isCreating.value = false;
         ElMessage.error('生成失败！请稍后再试')
-        resultList.value.shift();
+    }
+}
+
+//删除历史记录
+const handleDeleteHistory = async (item: any) => {
+    try {
+        await  fetchDeleteTextToPictureHistory({
+            recordId: item.id
+        })
+        ElMessage.success('删除成功')
+        getAllHistoryRequest();
+    } catch (error: any) {
+        ElMessage.error(error.message)
     }
 
 }
 
-//删除历史记录
-const handleDeleteHistory = (item: any) => {
-    //TODO:发送请求
+//复制文本
+const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    ElMessage.success('复制成功');
 }
 
 onMounted(() => {
-    //TODO:获取历史记录后，将isLoading设置为false
-    isLoading.value = false;
+    getAllHistoryRequest(); 
+    setInterval(()=> {
+        isLoading.value = false;
+    },2000)
 })
 </script>
 
@@ -331,19 +341,29 @@ onMounted(() => {
                 padding: 10px;
                 padding-bottom: 20px;
                 border-radius: 8px;
-                background-color: #25206e;
+                background-color: #25206e6f;
                 margin-bottom: 50px;
                 margin-right: 10px;
                 &-content {
                     margin-bottom: 10px;
                     font-size: 15px;
                     color: #fff;
+                    cursor: pointer;
                 }
-                &-img,.skeleton {
+                &-img,.skeleton,.image-slot {
                     display: flex;
+                    padding: 8px 20px;
                     flex-flow: row nowrap;
                     justify-content: space-between;
-                    gap: 8px;
+                    gap: 20px;
+                }
+                .image-slot {
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #ccc;
+                    background-color: #0e0e27;
                 }
                 &-footer {
                     float: right;
