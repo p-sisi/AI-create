@@ -22,7 +22,6 @@
                     <!-- 创作结果生成中时的中间状态：开始创作出现骨架屏，请求结果回来后开始打字 -->
                     <div class="result-dialogue" v-if="textStore.isCreating || textStore.isTyping">
                         <div class="dialogue-question">
-                            <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
                             <img :src="textStore.selectedTemp.modelImg" alt="">
                             <div>{{ textStore.selectedTemp.title }}</div>
                         </div>
@@ -32,19 +31,15 @@
                                 <!-- 打字状态的文本generateResult -->
                                 <div v-if="textStore.isTyping == true">{{ generateResult }}</div>
                            </div>
-                           <div>
-                                
-                           </div>
                         </div>
                     </div>
                     <!-- 历史记录数据 -->
                     <div 
                         class="result-dialogue" 
-                        v-for="item in resultHistory"
+                        v-for="item in textStore.tempHistory"
                         :key="item.id">
                         <div class="dialogue-question">
-                            <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片，另一个想法：如果是对话类型的则显示一问一答样式 -->
-                            <img src="../../assets/images/logo.png" alt="">
+                            <img :src="`${BASE_URL}/file/images/${item.modelImg}`" alt="">
                             <el-tooltip
                                 class="box-item"
                                 effect="dark"
@@ -93,10 +88,9 @@
 import { ref, onMounted, Ref, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { InfoFilled } from '@element-plus/icons-vue'
-import { HISTORY } from '../../content/text'
+import { BASE_URL } from '../../content/user'
 import { getStringTime } from '../../utils/index'
 import { useTextStore } from '@/store';
-import { MarkdownPreview } from 'vue-meditor'
 import { fetchAllTempHistory, fetchDeleteTempHistory  } from '../../apis/temp'
 import { fetchCollectTemp, fetchCancelCollectTemp  } from '../../apis/collect'
 
@@ -124,7 +118,6 @@ const handleCopy = (text: string) => {
             ElMessage.error('复制失败')
         })
 }
-const resultHistory: Ref<HISTORY[]> = ref([]);        //历史记录
 
 /**
  *  获取模板列表历史记录请求
@@ -132,7 +125,7 @@ const resultHistory: Ref<HISTORY[]> = ref([]);        //历史记录
  const getTempDataListHistoryRequest = async () => {
     try {
         const result = await fetchAllTempHistory();
-        resultHistory.value = result.data;
+       textStore.setTempHistory(result.data.reverse());
     } catch (error: any) {
         ElMessage.error(error.message);
     }

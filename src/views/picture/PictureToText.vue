@@ -46,7 +46,7 @@
 
         <!-- 结果区 -->
         <div class="container-right">
-            <el-scrollbar max-height="460px">
+            <el-scrollbar max-height="520px">
             <div class="container-right-list">
                 <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
                     <template #template>
@@ -337,7 +337,7 @@ onMounted(() => {
                     margin-right: 10px;
                     text-align: center;
                     line-height: 30px;
-                    color: #e7b0c9;
+                    color: #eb9dc0;
                     font-size: 14px;
                     background-color:rgba($color: #907ee9, $alpha: 0.2);
                     border-radius: 2px;
@@ -346,7 +346,7 @@ onMounted(() => {
                 }
                 .type.selected {     //选中时的样式
                     background-color:rgba($color: #907ee9, $alpha: 0.7);
-                    color: #eb9dc0;
+                    color: #fff;
                 }
             }
         }
@@ -416,6 +416,7 @@ onMounted(() => {
                     margin-top: 10px;
                     padding: 10px;
                     font-size: 14px;
+                    color: #fff;
                     background-color: #25206e;
                     border-radius: 10px;
                     box-sizing: border-box;

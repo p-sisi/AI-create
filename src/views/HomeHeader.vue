@@ -67,7 +67,7 @@
                         </span>
                         <div v-else class="code">
                             <span><el-input v-model="inputCode" placeholder="请输入验证码" maxlength="6" class="input-account"/></span>
-                            <div class="code-num" @click="handleSendVerifyCode()" :class="{'code-num-active': isSendingCode}">{{ isSendingCode ? `（${sendingTime}秒）` :'发送验证码'}}</div>
+                            <div class="code-num" @click="handleSendVerifyCode()" :class="{'code-num-active': isSendingCode}">{{ isSendingCode ? `（${sendingTime}秒）后重发` :'发送验证码'}}</div>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                         <span>验证码：</span>
                         <div class="code">
                             <span><el-input ref="inputCodeRef" v-model="inputCode" style="width: 300px" placeholder="请输入验证码" class="input-account"/></span>
-                            <div class="code-num" @click="handleSendVerifyCode()" :class="{'code-num-active': isSendingCode}">{{ isSendingCode ? `（${sendingTime}秒）` :'发送验证码'}}</div>
+                            <div class="code-num" @click="handleSendVerifyCode()" :class="{'code-num-active': isSendingCode}">{{ isSendingCode ? `（${sendingTime}秒）后重发` :'发送验证码'}}</div>
                         </div>
                     </div>
                 </div>

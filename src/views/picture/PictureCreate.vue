@@ -71,7 +71,7 @@ const handleChangeMenu = (label: any) => {
         .left {
             width: 140px;
             height: calc(100vh - 92px);
-            background: #181747;
+            background: #0e0e27;
             padding: 15px;
             .left-divide {
                 width: 80%;
@@ -105,7 +105,7 @@ const handleChangeMenu = (label: any) => {
         .right {
             flex: 1;
             padding: 10px ;
-            background: #181747;
+            background: #0e0e27;
             display: flex;
             flex-flow: row nowrap;
         }

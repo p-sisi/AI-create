@@ -64,9 +64,8 @@ const handleClickHeaderMenu = (item: any) => {
         align-items: center;
         height: 60px;
         padding: 0 20px;
-        background: #181747;
+        background: #0e0e27;
         color: #fff;
-        border-bottom: 2px solid #907ee9;
         .back-to {
             height: 36px;
             width: 36px;

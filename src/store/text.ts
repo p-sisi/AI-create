@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { HISTORY } from '../content/text'
 
 export interface TextState{
     isSelectedTemp: boolean;    //选择模板创作 false：选择多轮对话
@@ -7,6 +8,9 @@ export interface TextState{
     isTyping: boolean;     //是否在打字
     activeTypeText: string;  //打字效果的文本
     inputEl: any;           //打字的输入框
+    activeTypeTextMul: string;  //打字效果的文本（多轮对话中）
+
+    tempHistory: HISTORY[];     //模板创作的历史记录
 }
 
 export const useTextStore = defineStore('text',{
@@ -17,6 +21,8 @@ export const useTextStore = defineStore('text',{
         isTyping: false,
         activeTypeText: '',
         inputEl: null,
+        activeTypeTextMul: '',
+        tempHistory: [],
 	}),
     actions: {
         setIsSelectTemp(val: boolean) {
@@ -36,6 +42,12 @@ export const useTextStore = defineStore('text',{
         },
         setInputEl(val: any) {
             this.inputEl = val
+        },
+        setActiveTypeTextMul(val: string) {
+            this.activeTypeTextMul = val;
+        },
+        setTempHistory(val: any) {
+            this.tempHistory = val
         }
     },
     // 持久化配置

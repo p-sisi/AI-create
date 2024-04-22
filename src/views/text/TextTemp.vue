@@ -112,7 +112,7 @@ import { useTextStore } from '@/store';
 import { ArrowRight, Loading } from '@element-plus/icons-vue'    
 import { CREATION_TEMPLATE } from '@/content/createTemp'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import { fetchAllTemp, fetchTempChat } from '../../apis/temp'
+import { fetchAllTemp, fetchTempChat, fetchAllTempHistory } from '../../apis/temp'
 
 const textStore = useTextStore()
 
@@ -202,7 +202,15 @@ const handleCreate = async () => {
             textStore.setIsTyping(false);
             clearInterval(timer2);
         }
-    }, 50);//50:打字速度
+    }, 20);//50:打字速度
+
+    //结束打字，重新请求历史记录列表数据
+    try {
+        const result = await fetchAllTempHistory();
+       textStore.setTempHistory(result.data.reverse());
+    } catch (error: any) {
+        ElMessage.error(error.message);
+    }
 }
 
 const changeInputValue = (item: any) => {

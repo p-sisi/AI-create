@@ -43,7 +43,7 @@
 
         <!-- 右边结果 -->
         <div class="container-right">
-            <el-scrollbar max-height="460px">
+            <el-scrollbar max-height="520px">
             <div class="result">
                 <!-- 历史记录列表 -->
                 <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
@@ -224,6 +224,7 @@ onMounted(() => {
 .container {
     display: flex;
     flex-flow: row nowrap;
+    gap: 10px;
     &-left{
         display: flex;
         flex-flow: column nowrap;
@@ -279,7 +280,7 @@ onMounted(() => {
                 margin-right: 10px;
                 text-align: center;
                 line-height: 30px;
-                color: #e7b0c9;
+                color: #fff;
                 font-size: 14px;
                 background-color:rgba($color: #907ee9, $alpha: 0.2);
                 border-radius: 2px;
@@ -326,7 +327,7 @@ onMounted(() => {
             color: #fff;
             &-list {
                 position: relative;
-                padding-right: 20px;
+                padding-right: 30px;
                 padding: 10px;
                 padding-bottom: 20px;
                 border-radius: 8px;

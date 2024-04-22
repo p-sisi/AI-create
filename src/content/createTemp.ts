@@ -1,6 +1,6 @@
 // 创作模板信息
 export const CREATION_TEMPLATE = [
-    {
+    {//文言文翻译器
         id: 1,
         title: '文案润色',
         modelContent: '提升文案品质，打造精彩文字，让您的内容更具吸引力。',

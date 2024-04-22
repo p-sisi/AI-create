@@ -35,7 +35,7 @@
 
         <!-- 结果区 -->
         <div class="container-right">
-            <el-scrollbar max-height="460px">
+            <el-scrollbar max-height="520px">
             <div class="container-right-list">
                 <el-skeleton style="width: 100%" :loading="isLoading" animated :count="2"  :throttle="500">
                     <template #template>

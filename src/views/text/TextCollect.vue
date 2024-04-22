@@ -2,13 +2,12 @@
     <div class="collect">
         <div v-if="isLoading" class="collect-loading">
             <div  ref="animation1"></div>
-            正在加载中...
+            <span>正在加载中...</span>
         </div>
        <div class="collect-container" v-for="item in collectList" :key="item.id" v-else>
            <div class="title">
-            <!-- FIXME：图片需要根据后端返回类型值判断应该显示哪一张图片 -->
-                <img src="../../assets/images/logo.png" alt="">
-                <div>{{ item.title }}</div>
+                <img :src="`${BASE_URL}/file/images/${item.modelImg}`" alt="">
+                <div>{{ item.answer.slice(0,19) }}</div>
            </div>
            <div class="divider"></div>
            <div class="content">
@@ -41,6 +40,7 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref, computed } from 'vue';
 import { TEMP_COLLECT } from '@/content/text'
+import { BASE_URL } from '../../content/user'
 import { fetchCollectListText } from '../../apis/collect'
 import { fetchCancelCollectTemp  } from '../../apis/collect'
 import { ElMessage } from 'element-plus';
@@ -112,18 +112,19 @@ onMounted(() => {
 <style lang="scss" scoped>
 .collect {
     height: 90vh;
+    width: 100%;
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
     gap: 20px;
     padding: 24px;
     &-loading {
+        height: 80vh;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 80vh;
-        width: 100%;
         font-size: 12px;
         color: #999;
         div {
@@ -134,22 +135,29 @@ onMounted(() => {
     }
     .collect-container {
         width: 320px;
-        height: 400px;
-        background-color: #fff;
+        height: 390px;
+        background-color: #303032;
         border-radius: 10px;
         overflow: hidden;
+        transition: all 0.4s ;
+        box-sizing: border-box;
         .title {
-            height: 50px;
-            color: black;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 40px;
+            color: #fff;
             padding: 8px 8px 0px 8px;
             img {
-                width: 40px;
-                height: 40px;
+                width: 30px;
+                height: 30px;
             }
             div {
                 width: 90%;
-                margin-left: 46px;
-                margin-top: -38px;
+                font-size: 14px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
         .divider {
@@ -158,11 +166,11 @@ onMounted(() => {
             background: linear-gradient(to right, #b93bed, #5cfcff);
         }
         .content {
-            color: black;
+            color: #ccc;
             max-height: 290px;
             min-height: 290px;
-            padding: 8px;
-            font-size: 14px;
+            padding: 8px 10px;
+            font-size: 13px;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -189,7 +197,7 @@ onMounted(() => {
         }
     }
     .collect-container:hover {
-        background-color: rgba($color: #fff, $alpha: 0.9) ;
+        margin-top: 4px;
     }
 }
 </style>
