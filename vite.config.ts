@@ -13,7 +13,7 @@ export default defineConfig(() => {
       port: 1033,
       open: true,
       proxy: { 
-          '^(/user|/modelChat|/collect|/freeChat|/textToImage|/talkImage)': {
+          '^(/user|/modelChat|/collect|/freeChat|/textToImage|/talkImage|/file)': {
               target: BASE_URL,    //请求域名
               changeOrigin: true,
           }

@@ -73,49 +73,33 @@
                             <div class="result-list-img">
                                 <div class="image-list">
                                     <!-- 第一张图片 -->
-                                    <div class="image-list-item">
-                                        <el-image class="item-image" :src="`${BASE_URL}/file/images/${item.image1}`" infinite lazy
+                                    <div class="image-list-item" 
+                                        v-for="value in [{
+                                            name: item.image1,isCollect:item.collect1},
+                                            {name: item.image2,isCollect:item.collect2},
+                                            {name: item.image3,isCollect:item.collect3}]"
+                                        :key="value.name">
+                                        <el-image class="item-image" :src="`${BASE_URL}/file/images/${value.name}`" infinite lazy
                                             :preview-src-list="[`${BASE_URL}/file/images/${item.image1}`, `${BASE_URL}/file/images/${item.image2}`, `${BASE_URL}/file/images/${item.image3}`]" >
                                             <template #placeholder>
                                                 <div class="item-image-slot">Loading...</div>
                                             </template>
                                         </el-image>
-                                        <div class="item-mask">
-                                            <span v-if="item.collect1" class="iconfont ai-collect"></span>
-                                            <span v-else class="iconfont ai-no-collect"></span>
+                                        <div class="item-list-mask">
+                                            <el-tooltip class="box-item" effect="dark" :content="value.isCollect ? '取消收藏' :'收藏'"placement="bottom">
+                                                <span v-if="value.isCollect" class="iconfont ai-collect" style="color:#f7ba2a" @click="handleCollect(value,item)"></span>
+                                                <span v-else class="iconfont ai-no-collect" @click="handleCollect(value,item)"></span>
+                                            </el-tooltip>
+                                            <el-divider direction="vertical" />
+                                            <el-tooltip class="box-item" effect="dark" content="下载"placement="bottom">
+                                                <span class="iconfont ai-xiazai" @click="handleDownLoad(value)"></span>
+                                            </el-tooltip>
+                                            <el-divider direction="vertical" />
+                                            <el-tooltip class="box-item" effect="dark" content="分享至星球"placement="bottom">
+                                                <span class="iconfont ai-share"></span>
+                                            </el-tooltip>
                                         </div>
                                     </div>
-                                    <!-- 第二张图片 -->
-                                    <div  class="image-list-item">
-                                        <el-image class="image" :src="`${BASE_URL}/file/images/${item.image2}`"
-                                            :preview-src-list="[
-                                                `${BASE_URL}/file/images/${item.image1}`, `${BASE_URL}/file/images/${item.image2}`, `${BASE_URL}/file/images/${item.image3}`]" 
-                                            infinite lazy>
-                                            <template #placeholder>
-                                                <div class="image-slot">Loading...</div>
-                                            </template>
-                                        </el-image>
-                                        <div class="image-list-mask">
-                                            <span v-if="item.collect2" class="iconfont ai-collect"></span>
-                                            <span v-else class="iconfont ai-no-collect"></span>
-                                        </div>
-                                    </div>
-                                    <!-- 第三张图片 -->
-                                    <div  class="image-list-item">
-                                        <el-image class="image" :src="`${BASE_URL}/file/images/${item.image3}`"
-                                            :preview-src-list="[
-                                                `${BASE_URL}/file/images/${item.image1}`, `${BASE_URL}/file/images/${item.image2}`, `${BASE_URL}/file/images/${item.image3}`]" 
-                                            infinite lazy>
-                                            <template #placeholder>
-                                                <div class="image-slot">Loading...</div>
-                                            </template>
-                                        </el-image>
-                                        <div class="image-list-mask">
-                                            <span v-if="item.collect3" class="iconfont ai-collect"></span>
-                                            <span v-else class="iconfont ai-no-collect"></span>
-                                        </div>
-                                    </div>
-
                                 </div>
                                 <!-- <div class="image-footer" @click="console.log('n点击了上层')">
                                     <div v-for="(value,index) in [{name: item.image1,isCollect:item.collect1},{name: item.image1,isCollect:item.collect1},{name: item.image1,isCollect:item.collect1}]" @click.stop="console.log('点击')">
@@ -155,6 +139,7 @@ import { BASE_URL } from '../../content/user'
 import { ElMessage } from 'element-plus';
 import { getStringTime } from '@/utils/index';
 import { Loading } from '@element-plus/icons-vue'
+import axios from 'axios';
 import { fetchHistoryTextTo, fetchTextToPictureCreate, fetchDeleteTextToPictureHistory,fetchCollectImage, fetchCancelCollectImage } from '../../apis/picture'
 
 const isLoading  = ref(true);   //页面加载
@@ -227,39 +212,12 @@ const handleCreate = async () => {
     }
 }
 
-const showCollectIcon = ref(false);     //是否展示图片上的图标
-const activeImageIndex = ref();     //当前选择的图片
-const activeImageName = ref();      //当前选择的图片的名字
-
-//鼠标移到图片上或者移开图片，目的：展示图片上的图标
-const handleMouseEnter = (index: any,name: string) => {
-    activeImageIndex.value = index;
-    activeImageName.value = name
-
-    // 获取最上层元素的引用
-    const upperElement = document.querySelector('.image-footer');
-      if (upperElement) {
-        // 触发最上层元素的mouseenter事件
-        const mouseEnterEvent = new MouseEvent('mouseenter', {
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        upperElement.dispatchEvent(mouseEnterEvent);
-      }
-}
-const handleMouseLeave = () => {
-    activeImageIndex.value = null;
-    activeImageName.value = ''
-}
-
 /**
  * 收藏和取消收藏
  * @param value ：{name: '',isCollect: false}
  * @param item ：{image1: '',image2: '',image3: '',collect1: false,collect2: false,collect3: false}
  */
 const handleCollect = async(value: any,item: any) => {
-    console.log('点击了收藏')
     try {
         if(value.isCollect == true) {
             value.isCollect = false
@@ -280,6 +238,38 @@ const handleCollect = async(value: any,item: any) => {
         ElMessage.error(error.message)
     }
 }
+
+// 设置请求头
+const token = localStorage.getItem('Token');
+const config = {
+  headers: {
+    'Content-Type': 'multipart/form-data', // 设置Content-Type为formData类型
+    'Authorization': `${token}`, 
+  }
+}
+//下载图片
+const handleDownLoad = async (value: any) => {
+    try {
+        axios.get(`http://localhost:1033/file/images/download/${value.name}`, config)
+            .then((response: any) => {
+                const blob = new Blob([response.data]);
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', value.name); // 在这里设置文件名
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                ElMessage.success('下载成功');
+            })
+            .catch((error: any) => {
+                console.error('Error:', error);
+            });
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
 
 
 //删除历史记录
@@ -427,7 +417,6 @@ onMounted(() => {
                 position: relative;
                 padding-right: 30px;
                 padding: 10px;
-                padding-bottom: 20px;
                 border-radius: 8px;
                 background-color: #25206e6f;
                 margin-bottom: 50px;
@@ -455,6 +444,10 @@ onMounted(() => {
                         justify-content: space-between;
                         gap: 20px;
                         .image-list-item {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: flex-end;
+                            align-items: flex-end;
                             .item-image {
                                 .item-image-slot {
                                     height: 100%;
@@ -464,6 +457,12 @@ onMounted(() => {
                                     color: #ccc;
                                     background-color: #0e0e27;
                                 }
+                            }
+                            .item-list-mask {
+                                display: flex;
+                                align-items: center;
+                                gap: 2px;
+                                cursor: pointer;
                             }
                         }
                         // .image:hover:before {
