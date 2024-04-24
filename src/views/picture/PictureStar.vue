@@ -13,7 +13,12 @@
 
         <div class="container">
             <div v-for="item in shareList" :key="item.id" class="item" @click="handleClickImage(item)">
-                <img :src="`${BASE_URL}/file/images/${item.filename}`" alt="">
+                <el-image class="image" 
+                    :src="`${BASE_URL}/file/images/${item.filename}`" 
+                    infinite lazy 
+                    :preview-src-list="[`${BASE_URL}/file/images/${item.filename}`]" 
+                    :class="{select: selectedImgId === item.id}"
+                    />
                 <div class="mask" v-if="isShowFooter && selectedImgId === item.id">
                     <span>{{ item.title }}</span>
                     <div class="mask-footer">
@@ -193,15 +198,17 @@ const handleClickToCreate = () => {
     .item {
         margin: 10px;
         width: calc( 100%/4 - 10px);
-        img {
+        .image {
             display: inline-block;
             position: relative;
             width: 100%;
             border-radius: 10px;
-            z-index: 4;
             box-sizing: border-box;
         }
-        img:hover {
+        .image:hover {
+            border: 2px solid #b641ee;
+        }
+        .select {
             border: 2px solid #b641ee;
         }
     }
