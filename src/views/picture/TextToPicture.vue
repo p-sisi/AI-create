@@ -92,21 +92,15 @@
                                             </el-tooltip>
                                             <el-divider direction="vertical" />
                                             <el-tooltip class="box-item" effect="dark" content="下载"placement="bottom">
-                                                <span class="iconfont ai-xiazai" @click="handleDownLoad(value)"></span>
+                                                <a :href="`${BASE_URL}/file/images/download/${value.name}`"><span class="iconfont ai-xiazai"></span></a>
                                             </el-tooltip>
                                             <el-divider direction="vertical" />
                                             <el-tooltip class="box-item" effect="dark" content="分享至星球"placement="bottom">
-                                                <span class="iconfont ai-share"></span>
+                                                <span class="iconfont ai-share" @click="handleClickShare(item,value)"></span>
                                             </el-tooltip>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="image-footer" @click="console.log('n点击了上层')">
-                                    <div v-for="(value,index) in [{name: item.image1,isCollect:item.collect1},{name: item.image1,isCollect:item.collect1},{name: item.image1,isCollect:item.collect1}]" @click.stop="console.log('点击')">
-                                        <span v-if="value.isCollect == false && index == activeImageIndex && activeImageName == value.name" class="iconfont ai-no-collect collect-icon"></span>
-                                        <span v-if="value.isCollect == true && showCollectIcon && activeImageName == value.name" class="iconfont ai-collect collect-icon"></span>
-                                    </div>
-                                </div> -->
                             </div>
                             <div class="result-list-footer">
                                 <span>{{ getStringTime(item.createTime) }}</span>
@@ -130,6 +124,25 @@
             </el-scrollbar>
         </div>
     </div>
+
+    <!-- 分享至星球的弹窗 -->
+    <el-dialog v-model="shareDialogVisible" title="分享至星球" width="800" :close-on-click-modal="false" :show-close="false">
+        <div style="display: flex;justify-content: flex-start;gap: 20px;">
+            <div style="display: flex;align-items: center"><img style="width: 300px" :src="`${BASE_URL}/file/images/${selectedImage}`"  alt=""></div>
+            <div style="display: flex;flex-direction: column;justify-content: space-between;">
+                <div>
+                    <div style="font-size: 18px;font-weight: 600;margin-bottom: 10px;">说点什么：</div>
+                    <el-input v-model="inputShare" style="width: 440px"  :autosize="{ minRows: 6, maxRows: 8 }"type="textarea"
+                        placeholder="分享至星球"
+                    />
+                </div>
+                <div style="display: flex;justify-content: flex-end;margin-bottom: 30px;margin-top: 10px;">
+                    <el-button plain @click="shareDialogVisible = false">取消</el-button>
+                    <el-button type="primary" color="#b641ee" @click="handleShare()">分享</el-button>
+                </div>
+            </div>
+        </div>
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -141,6 +154,7 @@ import { getStringTime } from '@/utils/index';
 import { Loading } from '@element-plus/icons-vue'
 import axios from 'axios';
 import { fetchHistoryTextTo, fetchTextToPictureCreate, fetchDeleteTextToPictureHistory,fetchCollectImage, fetchCancelCollectImage } from '../../apis/picture'
+import { fetchShare } from '../../apis/share'
 
 const isLoading  = ref(true);   //页面加载
 
@@ -243,7 +257,7 @@ const handleCollect = async(value: any,item: any) => {
 const token = localStorage.getItem('Token');
 const config = {
   headers: {
-    'Content-Type': 'multipart/form-data', // 设置Content-Type为formData类型
+    'Content-Type': 'image/jpeg', // 设置Content-Type为formData类型
     'Authorization': `${token}`, 
   }
 }
@@ -252,14 +266,12 @@ const handleDownLoad = async (value: any) => {
     try {
         axios.get(`http://localhost:1033/file/images/download/${value.name}`, config)
             .then((response: any) => {
-                const blob = new Blob([response.data]);
-                const url = window.URL.createObjectURL(blob);
+                const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', value.name); // 在这里设置文件名
-                document.body.appendChild(link);
+                link.download = value.name;
                 link.click();
-                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
                 ElMessage.success('下载成功');
             })
             .catch((error: any) => {
@@ -290,6 +302,32 @@ const handleDeleteHistory = async (item: any) => {
 const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     ElMessage.success('复制成功');
+}
+
+const shareDialogVisible = ref(false);      //分享至星球弹窗
+const selectedImage = ref();          //当前选择的图片名称
+const inputShare = ref('');          //分享值星球输入的内容
+
+const handleClickShare = (item: any,value: any) => {
+    shareDialogVisible.value = true;
+    selectedImage.value = value.name;
+    inputShare.value = item.text;
+}
+
+/**
+ *  分享至星球
+ */
+ const handleShare = async() => {
+    try {
+        await fetchShare({
+            title: inputShare.value,
+            filename: selectedImage.value
+        })
+        ElMessage.success('分享成功')
+        shareDialogVisible.value = false;
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
 }
 
 onMounted(() => {
@@ -465,17 +503,6 @@ onMounted(() => {
                                 cursor: pointer;
                             }
                         }
-                        // .image:hover:before {
-                        //     content: "";
-                        //     position: absolute;
-                        //     top: 0;
-                        //     left: 0;
-                        //     width: 100%;
-                        //     height: 100%;
-                        //     background: linear-gradient(to top, rgba(#000,0.8), rgba(#000,0.0));
-                        //     z-index: 2; /* 遮罩层的层级 ,要比图标低，因为图标需要显示高亮*/
-                        //     pointer-events: none;//鼠标事件穿透遮罩层，图片层级1，为了点击图片可以进行预览
-                        // }
                     }
                 }
                 &-footer {
