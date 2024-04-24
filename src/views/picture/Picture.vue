@@ -27,7 +27,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import router from '@/router/index.ts';
 import { usePictureStore } from '@/store'
 

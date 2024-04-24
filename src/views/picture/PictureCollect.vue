@@ -17,12 +17,9 @@
                             <span class="iconfont ai-delete" style="color:#f56c6c"></span>
                         </template>
                     </el-popconfirm>
-                    <el-tooltip class="box-item" effect="dark" content="删除"placement="bottom">
-
-                    </el-tooltip>
                     <el-divider direction="vertical" />
                     <el-tooltip class="box-item" effect="dark" content="下载"placement="bottom">
-                        <a :href="`${BASE_URL}/file/images/download/${item.filename}`"><span class="iconfont ai-xiazai" @click="handleDownLoad(item)"></span></a>
+                        <a :href="`${BASE_URL}/file/images/download/${item.filename}`"><span class="iconfont ai-xiazai" style="color: #fff"></span></a>
                     </el-tooltip>
                     <el-divider direction="vertical" />
                     <el-tooltip class="box-item" effect="dark" content="分享至星球"placement="bottom">
@@ -61,7 +58,7 @@ import { ElMessage } from 'element-plus';
 import { InfoFilled } from '@element-plus/icons-vue'
 import { COLLECT_LIST } from '../../content/picture';
 import { BASE_URL } from '../../content/user'
-import axios from 'axios';
+import router from '../../router/index.ts';
 
 onMounted(() => {
     getAllCollectRequest();
@@ -91,7 +88,7 @@ const handleMouseEnter = (item: any) => {
 }
 
 /**
- * 取消收藏
+ * 删除一个收藏
  * @param item : { id: number;title: string;filename: string; collectTime: string;}
  */
  const handleDelete = async(item: any) => {
@@ -99,7 +96,7 @@ const handleMouseEnter = (item: any) => {
         await fetchCancelCollectImage({
             imageName: item.name,
         })
-        return  ElMessage.success('成功');
+        return  ElMessage.success('删除成功');
     } catch (error: any) {
         ElMessage.error(error.message)
     }
@@ -125,6 +122,7 @@ const handleShare = async() => {
         })
         ElMessage.success('分享成功')
         shareDialogVisible.value = false;
+        router.push('/ai_picture/star')
     } catch (error: any) {
         ElMessage.error(error.message)
     }

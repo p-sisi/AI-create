@@ -155,6 +155,10 @@ import { Loading } from '@element-plus/icons-vue'
 import axios from 'axios';
 import { fetchHistoryTextTo, fetchTextToPictureCreate, fetchDeleteTextToPictureHistory,fetchCollectImage, fetchCancelCollectImage } from '../../apis/picture'
 import { fetchShare } from '../../apis/share'
+import router from '../../router/index.ts';
+import { usePictureStore } from '@/store'
+
+const pictureStore = usePictureStore();
 
 const isLoading  = ref(true);   //页面加载
 
@@ -253,37 +257,6 @@ const handleCollect = async(value: any,item: any) => {
     }
 }
 
-// 设置请求头
-const token = localStorage.getItem('Token');
-const config = {
-  headers: {
-    'Content-Type': 'image/jpeg', // 设置Content-Type为formData类型
-    'Authorization': `${token}`, 
-  }
-}
-//下载图片
-const handleDownLoad = async (value: any) => {
-    try {
-        axios.get(`http://localhost:1033/file/images/download/${value.name}`, config)
-            .then((response: any) => {
-                const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = value.name;
-                link.click();
-                window.URL.revokeObjectURL(url);
-                ElMessage.success('下载成功');
-            })
-            .catch((error: any) => {
-                console.error('Error:', error);
-            });
-
-    } catch (error) {
-        console.error('Error:', error);
-    }
-};
-
-
 //删除历史记录
 const handleDeleteHistory = async (item: any) => {
     try {
@@ -325,6 +298,8 @@ const handleClickShare = (item: any,value: any) => {
         })
         ElMessage.success('分享成功')
         shareDialogVisible.value = false;
+        router.push('/ai_picture/star')
+        pictureStore.setActiveHeaderMenu('创意星球')
     } catch (error: any) {
         ElMessage.error(error.message)
     }
