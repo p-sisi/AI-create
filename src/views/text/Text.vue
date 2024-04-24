@@ -115,7 +115,7 @@ const loginOutRequest = async() => {
 <style lang="scss" scoped>
 .text_container {
     width: 100%;
-    background: linear-gradient(to right, #1d1723, #171f24);
+    background: #000000;
     .header { 
         display: flex;
         flex-flow: row nowrap;
@@ -123,7 +123,7 @@ const loginOutRequest = async() => {
         justify-content: space-between;
         height: 60px;
         padding: 0 20px;
-        background:linear-gradient(to right, #0b0a0c, #161a1c);
+        background:#000000;
         .back-to {
             height: 36px;
             width: 36px;

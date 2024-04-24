@@ -9,10 +9,9 @@
                     <el-upload
                         class="uploader"
                         :show-file-list="false"
-                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                        :on-success="handleUploadSuccess"
                         :on-error="handleUploadError"
                         :on-progress="handleUploadProgress"
+                        @change="handleChangeFile"
                     >
                         <img v-if="imgUrl !== '' && !isUploading" :src="imgUrl" class="img" />
                         <el-progress v-else-if="isUploading" type="circle" :percentage="0" />
@@ -22,17 +21,16 @@
                         </div>
                     </el-upload>
                 </div>
-                <div style="font-size: 14px;margin-top: 10px;">解说类型：</div>
-                <div class="need-type">
-                    <div 
-                        v-for="item in TYPE"   
-                        @click="radioChange(item)" 
-                        class="type"
-                        :class="{ 'selected': item === activeType }"
-                    >
-                        {{ item }}
-                    </div>
-                </div>
+                <div class="need-text">问题：</div>
+                <el-input
+                    ref="textInputRef"
+                    v-model="inputText"
+                    style="width: 300px"
+                    :rows="{max: 4, min: 1}"
+                    type="textarea"
+                    placeholder="请输入你想要问的问题"
+                    resize="none"
+                />
             </div>
 
             <div class="container-left-btn"  @click="handleCreate">
@@ -59,42 +57,53 @@
                         </div>
                     </template>
                     <template #default>
-                        <!-- 加载完成数据 -->
-                        <div class="list" v-for="item in DATA">
+                        <!-- 生成状态卡片 -->
+                        <div class="list" v-if="isCreating || isTyping">
                             <div class="list-header">
-                                <div class="flex-row" style="gap:10px;align-items: flex-end">
+                                <div class="flex-row" style="gap:10px;align-items: center">
                                     <el-tooltip
                                         effect="dark"
                                         content="点击查看图片"
                                         placement="right-start"
                                     >
                                         <div class="list-header-img">
-                                            <el-image v-if="item.text == ''" :src="imgUrl" :preview-src-list="[imgUrl]" lazy/>
-                                            <el-image v-else :src="item.imgUrl" :preview-src-list="[item.imgUrl]" lazy/>
+                                            <el-image :src="imgUrl" :preview-src-list="[imgUrl]" lazy/>
                                         </div>
                                     </el-tooltip>
-                                    <span>图片</span>
+                                    <span>{{ inputText == ''? '请帮我解说一下整张图片的内容': inputText }}</span>
                                 </div>
-                                <div>
-                                    <span>{{ item.createTime }}</span>
-                                    <span style="margin: 8px;color: #3b3387">|</span>
-                                    <span>共 {{ item.text.length }} 字</span>
-                                    <span style="margin: 8px;color: #3b3387">|</span>
+                            </div>
+                            <div class="list-text" v-if="isCreating || isTyping">
+                                <el-skeleton :rows="2" animated :throttle="500" v-if="isTyping == false"/>
+                                <div v-else>{{ generateResult }}</div>
+                            </div>
+                        </div>
+                        <!-- 加载完成数据 -->
+                        <div class="list" v-for="item in historyList" :key="item.id">
+                            <div class="list-header">
+                                <div class="flex-row" style="gap:10px;align-items: center">
                                     <el-tooltip
                                         effect="dark"
-                                        :content=" item.isCollect==true ? '取消收藏' : '收藏'"
-                                        placement="bottom"
+                                        content="点击查看图片"
+                                        placement="right-start"
                                     >
-                                        <span class="iconfont ai-no-collect icon" v-if="!item.isCollect" @click="handleCollect(item)"></span>
-                                        <span class="iconfont ai-collect icon" v-else @click="handleCancelCollect(item)"></span>
+                                        <div class="list-header-img">
+                                            <el-image :src="`${BASE_URL}/file/images/${item.filename}`" :preview-src-list="[`${BASE_URL}/file/images/${item.filename}`]" lazy/>
+                                        </div>
                                     </el-tooltip>
+                                    <span>{{item.question}}</span>
+                                </div>
+                                <div>
+                                    <span>{{ getStringTime(item.createTime) }}</span>
+                                    <span style="margin: 8px;color: #3b3387">|</span>
+                                    <span>共 {{ item.answer.length }} 字</span>
                                     <span style="margin: 8px;color: #3b3387">|</span>
                                     <el-tooltip
                                         effect="dark"
                                         content="复制"
                                         placement="bottom"
                                     >
-                                        <span class="iconfont ai-copy icon" @click="handleCopy(item.text)"></span>
+                                        <span class="iconfont ai-copy icon" @click="handleCopy(item.answer)"></span>
                                     </el-tooltip>
                                     <span style="margin: 8px;color: #3b3387">|</span>
                                     <el-popconfirm width="220"
@@ -111,8 +120,7 @@
                                 </div>
                             </div>
                             <div class="list-text">
-                                <div v-if="item.text !== ''">{{ item.text }}</div>
-                                <el-skeleton :rows="2" animated :throttle="500" v-else/>
+                                <div >{{ item.answer }}</div>
                             </div>
                         </div>
                     </template>
@@ -124,61 +132,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, Ref, nextTick } from 'vue';
 import { Plus, Loading } from '@element-plus/icons-vue';
 import type { UploadProps } from 'element-plus'
 import { ElMessage } from 'element-plus';
-import { getCurrentTime } from '@/utils/index';
+import { getCurrentTime, getStringTime } from '@/utils/index';
+import { PICTURE_TEXT_HISTORY } from '@/content/picture'
+import { BASE_URL } from '@/content/user'
+import { fetchHistoryPictureTo } from '../../apis/picture'
+import { usePictureStore } from '@/store'
+import axios from 'axios';
+
+const pictureStore = usePictureStore();
 
 const isLoading = ref(true);   //页面加载
 
-const DATA = ref([
-    {
-        imgUrl: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        text: '基于图片进行文字创作、回答问题，帮你写文案、构思故事，助你释放创造力，提供灵感和创作支持。',
-        createTime: '2023-03-21 12:30:00',
-        isCollect: true,
-    },
-    {
-        imgUrl: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        text: '基于图片进行文字创作、回答问题，帮你写文案、构思故事，助你释放创造力，提供灵感和创作支持。',
-        createTime: '2023-03-21 12:30:00',
-        isCollect: false,
-    },
-    {
-        imgUrl: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        text: '基于图片进行文字创作、回答问题，帮你写文案、构思故事，助你释放创造力，提供灵感和创作支持。',
-        createTime: '2023-03-21 12:30:00',
-        isCollect: true,
-    },
-    {
-        imgUrl: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        text: '基于图片进行文字创作、回答问题，帮你写文案、构思故事，助你释放创造力，提供灵感和创作支持。',
-        createTime: '2023-03-21 12:30:00',
-        isCollect: false,
-    },
-])
+const historyList: Ref<PICTURE_TEXT_HISTORY[]> = ref([]);      //历史记录
+/**
+ *  获取全部历史记录
+ */
+const getAllHistory = async() => {
+    try {
+        const result = await fetchHistoryPictureTo()
+        historyList.value = result.data.reverse();
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
+}
 
-const isCreating = ref(false);
+const isCreating = ref(false);      //图片正在创作中
+const isUploading = ref(false);     //本地图片正在上传中
+const isTyping = ref(false);        //图片正在打字中
 
 
-const isUploading = ref(false);
+//打字文本动态输入
+const generateResult = computed({
+    get: () => pictureStore.activeTypeText || '',
+    set: (value: any) => pictureStore.setActiveTypeText(value)
+});
+
+const uploadFile = ref();           //当前选择的文件
 const imgUrl = ref('');
 
 const handleUploadProgress = (evt: any) => {
     isUploading.value = true;
     console.log('上传进度', evt)
-}
-
-const handleUploadSuccess: UploadProps['onSuccess'] = (
-    response:any,
-    uploadFile:any
-) => {
-    isUploading.value = false;
-    imgUrl.value = URL.createObjectURL(uploadFile.raw!)
-    ElMessage.success('上传成功')
-    console.log('上传成功', response, uploadFile)
-    console.log('图片地址', imgUrl.value)
 }
 
 const handleUploadError: UploadProps['onError'] = (
@@ -189,50 +187,67 @@ const handleUploadError: UploadProps['onError'] = (
     imgUrl.value = URL.createObjectURL(uploadFile.raw!)
     console.log('上传失败', response, uploadFile)
     console.log('图片地址', imgUrl.value)
-    ElMessage.error('上传失败')
-
 }
 
-const TYPE = ['普通','诗歌','故事构造'];
+const handleChangeFile = (file: any) => {
+    // file 是当前选择的文件，可以通过 file.raw 获取原始的 File 对象,fileList是上传的文件列表
+    uploadFile.value = file.raw;
+    imgUrl.value = URL.createObjectURL(file.raw!)
+    console.log(file.raw)
+};
 
-const activeType = ref('普通') 
-const radioChange = (label: any) => {
-    if (activeType.value === label )  return 
-    activeType.value = label;
+const inputText  = ref('');     //用户输入内容
+
+// 设置请求头
+const token = localStorage.getItem('Token');
+const config = {
+  headers: {
+    'Content-Type': 'multipart/form-data', // 设置Content-Type为formData类型
+    'Authorization': `${token}`, 
+  }
 }
-
-//创作
-// 生成状态卡片数据
-const currentTime = ref('');
-const creatingData = computed(() => {
-    return {
-        imgUrl: imgUrl.value,
-        text:'',
-        createTime: currentTime.value,
-        isCollect: false
-    }
-})
 const handleCreate = async () => { 
-    // if(imgUrl.value == '')  return ElMessage.error('请先上传图片');
-    // if(isUploading.value )  return ElMessage.warning('图片正在上传中');
-    if(isCreating.value) return ElMessage.warning('请稍后再试，正在解读中...');
+    if(imgUrl.value == '')  return ElMessage.error('请先上传图片');
+    if(isUploading.value )  return ElMessage.warning('图片正在上传中');
+    if(isCreating.value) return ElMessage.warning('图片正在解读中，请稍后再试');
     try {
         //开始创作
         isCreating.value = true;
+        isTyping.value = false;
 
-        currentTime.value = getCurrentTime();
-        DATA.value.unshift(creatingData.value)
+        let formData = new FormData();
+        let question = inputText.value == ''? '请帮我解说一下整张图片的内容': inputText.value;
+        formData.append('file', uploadFile.value);
+        axios.post(`http://localhost:1033/talkImage/call?question=${question}`, formData, config)
+            .then(async(response: any) => {
+                isCreating.value = false;
+                pictureStore.setActiveTypeText('');
+                const typeText = response.data.data.answer; 
+                await nextTick();
 
-        const params = {
-            imgUrl: imgUrl.value,
-            type: activeType.value
-        }
-        //发送请求，请求结束后
-        // isCreating.value = false;
+                //开始打字
+                isTyping.value = true;
+                let i = 0;
+                const timer = setInterval(async () => {
+                    pictureStore.setActiveTypeText(pictureStore.activeTypeText + typeText.charAt(i));
+                    await nextTick();
+                    console.log(pictureStore.activeTypeText)
+                    i++;
+                    if (i > typeText.length) {
+                        //打字结束，设置打字状态为false，清除打字计时器
+                        isTyping.value = false;
+                        clearInterval(timer);
+                        getAllHistory();
+                    }
+                }, 20);//50:打字速度
+            })
+            .catch((error: any) => {
+                console.error('Error:', error);
+            });
     } catch (error) {
         isCreating.value = false;
         ElMessage.error('生成失败！请稍后再试')
-        DATA.value.shift();
+        historyList.value.shift();
     }
 }
 
@@ -263,8 +278,10 @@ const handleDelete = (item: any) => {
 }
 
 onMounted(() => {
-    //TODO:获取历史记录后，将isLoading设置为false
-    isLoading.value = false;
+    getAllHistory();
+    setTimeout(()=> {
+        isLoading.value = false;
+    },2000)
 })
 </script>
 
@@ -299,6 +316,12 @@ onMounted(() => {
                 margin-bottom: 20px;
                 color: #c5c6d0;
             }
+            ::v-deep(.el-textarea__inner) {
+                background-color:rgba($color: #907ee9, $alpha: 0.2);
+                box-shadow: none;
+                color: #fff;
+                padding: 5px 10px 15px 10px
+            }
             .need-img {
                 width: 100%;
                 height: auto;
@@ -307,7 +330,7 @@ onMounted(() => {
                     justify-content: center;
                     align-items: center;
                     width: 100%;
-                    height: 178px;
+                    height: 150px;
                     text-align: center;
                     background-color:rgba($color: #907ee9, $alpha: 0.2);
                     border-radius: 8px;
@@ -327,27 +350,9 @@ onMounted(() => {
                     }
                 }
             }
-            .need-type {
-                display: flex;
-                flex-flow: row nowrap;
+            .need-text {
                 margin-top: 10px;
-                .type {    //未选中时按钮样式
-                    height: 30px;
-                    width: 80px;
-                    margin-right: 10px;
-                    text-align: center;
-                    line-height: 30px;
-                    color: #eb9dc0;
-                    font-size: 14px;
-                    background-color:rgba($color: #907ee9, $alpha: 0.2);
-                    border-radius: 2px;
-                    cursor: pointer;
-                    transition: all 0.3s;
-                }
-                .type.selected {     //选中时的样式
-                    background-color:rgba($color: #907ee9, $alpha: 0.7);
-                    color: #fff;
-                }
+                margin-bottom: 4px;
             }
         }
 

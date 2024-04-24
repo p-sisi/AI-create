@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="login-btn">
-                    <el-button type="primary" round style="width: 300px;height: 40px;color: #fff;" color="#938af5" @click="handleLogin()">登  录</el-button>
+                    <el-button type="primary" round style="width: 300px;height: 40px;color: #fff;" color="#938af5" @click="handleLogin()"> {{ isLoging ? '登  录 中': '登  录'}}</el-button>
                 </div>
                 <div class="login-footer">
                     <span>还没有账号？</span>
@@ -171,6 +171,7 @@ const clickMenu = (type: string) => {
     if(activeMenu.value === 'picture') router.push('/ai_picture/create')
     if(activeMenu.value === 'file') router.push('/ai_file')
 }
+const isLoging = ref(false);        //是否正在登录
 
 /**
  *    登录
@@ -190,6 +191,7 @@ const handleLogin = async() => {
     }
     let result;
     try {
+        isLoging.value = true;
         if(isLoginByEmail.value == false) {
             const params = {
                 account: inputAccount.value,

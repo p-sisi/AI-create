@@ -214,7 +214,7 @@ onMounted(() => {
         .result-dialogue {
             width: 90%;
             min-height: 100px;
-            background: #0b0a0c;
+            background: #212121;
             border-radius: 10px;
             margin: 10px 20px;
             .dialogue-question {

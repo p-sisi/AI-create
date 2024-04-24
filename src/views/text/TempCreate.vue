@@ -26,7 +26,7 @@ import TextCreateResult from './TextCreateResult.vue';
     .body-temp {
         width: 400px;
         padding: 8px;
-        background: #0b0a0c;
+        background: #212121;
         border-radius: 10px;
     }
     .body-result {

@@ -275,7 +275,7 @@ onMounted(() => {
             width: 80%;
             margin: 10px 20px;
             padding: 20px;
-            background-color: rgba(133, 136, 139, 0.3);
+            background-color: #00000082;
             border-radius: 10px;
             .image {
                 width: 60px;
@@ -298,7 +298,7 @@ onMounted(() => {
             }
         }
         .temp-list-body:hover {
-            background-color: rgba(123, 114, 129, 0.3);
+            background-color: #424345;
         }
     }
 

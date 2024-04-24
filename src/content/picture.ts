@@ -10,3 +10,22 @@ export interface TEXT_PICTURE_HISTORY {
     collect2: boolean;  //
     collect3: boolean;  //
 }
+
+//收藏夹数据接口信息
+export interface COLLECT_LIST {
+    id: number;    
+    title: string;  //图片说明
+    filename: string;   //图片名字
+    collectTime: string;//收藏时间
+}
+
+
+//图片解说接口数据信息
+export interface PICTURE_TEXT_HISTORY {
+    id: number;    
+    userId: number; 
+    filename: string;  //图片名字
+    question: string;   //问题
+    answer: string;     //回答
+    createTime: string; //回答时间
+}

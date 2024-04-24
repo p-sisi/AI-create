@@ -2,11 +2,13 @@ import { defineStore } from 'pinia'
 
 export interface PictureState{
     activeHeaderMenu: string,  //头部激活的菜单
+    activeTypeText: string;     //图片生成文本中的打字文本
 }
 
 export const usePictureStore = defineStore('picture',{
     state: (): PictureState => ({ 
-        activeHeaderMenu: '创作区'
+        activeHeaderMenu: '创作区',
+        activeTypeText: ''
 	}),
     getters: {
 
@@ -14,6 +16,9 @@ export const usePictureStore = defineStore('picture',{
     actions: {
         setActiveHeaderMenu(val: string) {
             this.activeHeaderMenu = val;
+        },
+        setActiveTypeText(val: string) {
+            this.activeTypeText = val
         }
     },
 

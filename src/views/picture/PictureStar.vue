@@ -1,6 +1,6 @@
 <template>
-    <div>
-        创意星球
+    <div class="star">
+        
     </div>
 </template>
 
@@ -9,5 +9,9 @@
 </script>
 
 <style scoped lang="scss">
-
+.star {
+    height: 200vh;
+    padding: 20px;
+    background: #0e0e27;
+}
 </style>

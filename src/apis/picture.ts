@@ -22,3 +22,34 @@ export function fetchTextToPictureCreate(params: any) {
 export function fetchDeleteTextToPictureHistory(params: any) {
     return request.get('/textToImage/deleteRecord',params);
 }
+
+/**
+ *  获取所有图片的收藏
+ */
+export function fetchAllCollectImage() {
+    return request.get('/collect/getAllImageCollects');
+}
+
+/**
+ *  收藏图片
+ */
+export function fetchCollectImage(params: any) {
+    return request.post('/collect/collectImage',params);
+}
+
+/**
+ *  取消收藏图片
+ */
+export function fetchCancelCollectImage(params: any) {
+    return request.get('/collect/cancelImageCollect',params);
+}
+
+
+
+//图生文
+/**
+ *  获取历史记录
+ */
+export function fetchHistoryPictureTo() {
+    return request.get('/talkImage/getAllRecord');
+}

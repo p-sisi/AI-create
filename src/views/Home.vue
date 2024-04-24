@@ -13,7 +13,9 @@ import Body from './HomeBody.vue';
 
 <style lang="scss" scoped>
 .home-container {
-    height: 200vh;
-    background: linear-gradient(to top, #000000, #1c0935);
+    height: 440vh;
+    background-image: url('../assets//images/home-bg.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 </style>
