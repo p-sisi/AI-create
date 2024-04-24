@@ -48,7 +48,9 @@
                 </div>
             </div>
         </div>
-
+        <el-backtop :right="100" :bottom="100">
+            <span class="iconfont ai-to-top" style="font-size: 20px; color: #b93bed"></span>
+        </el-backtop>
     </div>
 </template>
 
@@ -197,7 +199,7 @@ const handleClickToCreate = () => {
     padding: 20px 180px;
     .item {
         margin: 10px;
-        width: calc( 100%/4 - 10px);
+        width: calc( 100%/4 - 20px);
         .image {
             display: inline-block;
             position: relative;
