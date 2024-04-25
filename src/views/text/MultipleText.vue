@@ -535,15 +535,16 @@ const sendQuestion = async() => {
             flex-direction: column;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 -5px 10px -5px rgba(0, 0, 0, 0.3);
             ::v-deep .el-textarea__inner {
                 padding: 8px 10px 8px 10px;
                 border-radius: 14px;
                 font-size: 14px;
                 color: black;
                 resize: none;
-                ::v-deep .el-textarea__inner:focus {
-                    box-shadow:0 0 0 2px #b545ee inset;
-                }
+            }
+            ::v-deep .el-textarea__inner:focus {
+                box-shadow:0 0 0 2px #b545ee inset;
             }
             .chat-input-icon {
                 width: 100%;

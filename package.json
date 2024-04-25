@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@vue-office/docx": "^1.6.1",
     "animate.css": "^4.1.1",
     "axios": "^1.6.7",
     "element-plus": "^2.6.0",
@@ -17,8 +18,10 @@
     "pinia": "^2.0.35",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.4.19",
+    "vue-demi": "^0.14.7",
     "vue-markdown": "^2.2.4",
     "vue-meditor": "^2.1.2",
+    "vue-pdf": "^4.3.0",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

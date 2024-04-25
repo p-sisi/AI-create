@@ -14,6 +14,10 @@ import TempCreate from '../views/text/TempCreate.vue'
 import MultipleText from "../views/text/MultipleText.vue";
 import Collect from '../views/text/TextCollect.vue'
 
+//文档类
+import FileHome from "../views/file/FileHome.vue";
+import FileCreate from "../views/file/FileCreate.vue";
+
 const routes = [
     {
         name: 'home',   
@@ -71,7 +75,19 @@ const routes = [
     },{
         name: 'file',   
         path: '/ai_file',  
-        component: File  
+        component: File ,
+        children: [
+            {
+                name: 'file_home',   
+                path: '/ai_file/file_home',  
+                component: FileHome ,
+            },
+            {
+                name: 'file_create',   
+                path: '/ai_file/file_create',  
+                component: FileCreate ,
+            }
+        ] 
     },
     {
         path: '/',

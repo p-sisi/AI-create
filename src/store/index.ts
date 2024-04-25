@@ -11,3 +11,4 @@ export const store = pinia;
 export * from './common';
 export * from './picture';
 export * from './text';
+export * from './file'

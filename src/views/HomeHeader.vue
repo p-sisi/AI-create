@@ -169,7 +169,7 @@ const clickMenu = (type: string) => {
     activeMenu.value = type;
     if(activeMenu.value === 'text') router.push('/ai_text/select')
     if(activeMenu.value === 'picture') router.push('/ai_picture/create')
-    if(activeMenu.value === 'file') router.push('/ai_file')
+    if(activeMenu.value === 'file') router.push('/ai_file/file_home')
 }
 const isLoging = ref(false);        //是否正在登录
 
