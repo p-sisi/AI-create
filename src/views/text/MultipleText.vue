@@ -4,7 +4,7 @@
         <div class="container-left">
             <!-- 用户信息 -->
             <div class="container-left-user">
-                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+                <el-avatar src="/src/assets/images/user.png"/>
                 <div class="username">{{ commonStore.userInfo.nickname }}</div>
                 <div class="divide"></div>
             </div>
@@ -28,7 +28,7 @@
                         </div>
                         <div>
                             <el-dropdown trigger="click">
-                                <el-icon style="margin-top: 16px;" v-show="item.id === activeCollectRadio"><MoreFilled /></el-icon>
+                                <el-icon style="margin-top: 8px;" v-show="item.id === activeCollectRadio"><MoreFilled /></el-icon>
                                 <template #dropdown>
                                     <el-dropdown-menu>
                                         <el-dropdown-item :icon="EditPen" @click="handleResetTitle(item)">编辑</el-dropdown-item>
@@ -86,7 +86,7 @@
                         <div class="list-item">
                             <span class="list-item-title">
                                 <img v-if="item.role =='assistant'" src="/src/assets/images/logo.png" alt="">
-                                <img v-else src="/src/assets/images/ball.png" alt="">
+                                <img v-else src="/src/assets/images/user.png" alt="">
                                 <span v-if="item.role =='assistant'" class="title-content">AI-Create</span>
                                 <span v-else class="title-content">You</span>
                             </span>
@@ -380,11 +380,11 @@ const sendQuestion = async() => {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                height: 40px;
+                height: 30px;
                 padding-left: 10px;
                 padding-right: 16px;
                 color: #fff;
-                line-height: 40px;
+                line-height: 30px;
                 font-size: 13px;
                 cursor: pointer;
                 border-radius: 8px;

@@ -10,7 +10,7 @@
                     <div class="header-title">文档宝库</div>
                 </div>
                 <div class="header-use">
-                    <el-avatar size="20" >user</el-avatar>
+                    <el-avatar size="20" src="/src/assets/images/user.png"></el-avatar>
                     <span>{{ commonStore.userInfo.nickname }}</span>
                     <span>|</span>
                     <span class="iconfont ai-loginOut" @click="loginOutdialogVisible = true"></span>
@@ -60,8 +60,8 @@
         </div>
         <!-- 文档历史记录区 -->
         <div class="file-list">
-            <div v-for="item in fileChatList" :key="item.id" class="file-list-item" @click="handleGoToCreate(item)">
-                <div class="title">{{ item.title }}</div>
+            <div v-for="item in fileChatList" :key="item.id" class="file-list-item">
+                <div class="title"  @click="handleGoToCreate(item)">{{ item.title }}</div>
                 <div style="height: 1px;width: 100%;background-color: #ccc;"></div>
                 <div style="display: flex;justify-content: space-between;align-items: center;padding: 4px;margin-right: 10px;">
                     <div class="time">
@@ -73,7 +73,7 @@
                         cancel-button-text="取消"
                         :icon="InfoFilled"
                         icon-color="#b73fed"
-                        title="A确定删除该文档记录？"
+                        title="确定删除该文档记录？"
                         @confirm="deleteChat(item)"
                     >
                         <template #reference>
@@ -382,11 +382,11 @@ const handleCreate = async () => {
             border-radius: 10px;
             transition: all 0.5s;
             box-sizing: border-box;
-            cursor: pointer;
             .title {
                 padding: 20px 10px;
                 text-align: center;
                 font-size: 20px;
+                cursor: pointer;
             }
             .time {
                 margin-left: 10px;

@@ -46,7 +46,8 @@
             <div style="display: flex;justify-content: flex-start;margin-left: -380px;margin-top: 100px"><img style="height: 800px;opacity: 0.5;" src="../assets/images/home-bg2.png" alt=""></div>
             <div style="display: flex;flex-direction: column;margin-left: 20px;">
                 <div class="body-advantage-title1">我们的具有的优势</div>
-                <div><img style="width: 40%;" src="../assets/images/what.png" alt=""></div>
+                <div><img style="width: 40%;" src="../assets/images/why.png" alt=""></div>
+                <div style="height: 1px;width:400px;background-color: #fff;"></div>
                 <div style="display: flex;gap: 20px;margin-left: 120px;margin-top: 30px;">
                     <div>
                         <div class="advantage">
@@ -132,6 +133,7 @@ import { ElMessage } from "element-plus";
 // 创作多元化：“文本、图像，一键切换，多元创作，无限可能！释放创意，打造个性作品。”
 
 const animation1 = ref<any>(null)
+let timer2;
 
 onMounted(() => {
     lottie.loadAnimation({
@@ -141,7 +143,7 @@ onMounted(() => {
         autoplay: true,   
         animationData: car  
     })
-    setInterval(async() => {
+    timer2 = setInterval(async() => {
         activeTypeText.value = '';
         const typeText = 'painting a brilliant chapter of literature; fusing creativity, carving the boundary of art. AI comprehensive creation platform, giving text, image, document with soul, opening a new era of art.'
         await nextTick();
@@ -181,6 +183,7 @@ const hideButton = () => {
 const StartToCreate = (item: any) => {
     //未登录，拦截
     if(!localStorage.getItem('Token')) return ElMessage.error('请先登录')
+    //清除
     //已登录，跳转
     if(item.id == 1) router.push('/ai_text/select')
     if(item.id == 2) router.push('/ai_picture')

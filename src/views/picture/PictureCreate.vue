@@ -12,7 +12,7 @@
                     @click="handleChangeMenu(item.label)">
                     <div class="icon">
                         <span class="iconfont ai-wenshengtu" v-if="item.label == '文生图'"></span>
-                        <span class="iconfont ai-similar" v-if="item.label == '相似图像生成'"></span>
+                        <!-- <span class="iconfont ai-similar" v-if="item.label == '相似图像生成'"></span> -->
                         <span class="iconfont ai-tushengwen" v-if="item.label == '图片解说'"></span>
                     </div>
                     <div class="left-context-text">{{ item.label }}</div>
@@ -23,7 +23,7 @@
             <div class="right">
                 <TextToPicture v-if="activeTabLabel == '文生图'"></TextToPicture>
                 <PictureToText v-if="activeTabLabel == '图片解说'"></PictureToText>
-                <PictureSimilar v-if="activeTabLabel == '相似图像生成'"></PictureSimilar>
+                <!-- <PictureSimilar v-if="activeTabLabel == '相似图像生成'"></PictureSimilar> -->
             </div>
         </div>
     </div>
@@ -46,11 +46,11 @@ const TAB_MENU = [
         label: '图片解说',
         description: '用户上传图片，AI生成对应的文字描述',
     },
-    {
-        id: 3,
-        label: '相似图像生成',
-        description: '用户上传一张图片，AI根据图片生成相似图像',
-    },
+    // {
+    //     id: 3,
+    //     label: '相似图像生成',
+    //     description: '用户上传一张图片，AI根据图片生成相似图像',
+    // },
 ]
 
 

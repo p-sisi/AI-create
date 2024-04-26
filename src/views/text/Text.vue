@@ -20,7 +20,7 @@
                 </div>
                 
                 <div class="header-use">
-                    <el-avatar size="20" >user</el-avatar>
+                    <el-avatar size="10" src="/src/assets/images/user.png"/>
                     <span>{{ commonStore.userInfo.nickname }}</span>
                     <span>|</span>
                     <span class="iconfont ai-loginOut" @click="loginOutdialogVisible = true"></span>

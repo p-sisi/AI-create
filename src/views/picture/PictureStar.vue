@@ -37,7 +37,7 @@
                                     <span v-if="commonStore.userInfo.userId == item.userId" class="iconfont ai-delete"></span>
                                 </template>
                             </el-popconfirm>
-                            <el-divider direction="vertical" />
+                            <el-divider direction="vertical" v-if="commonStore.userInfo.userId == item.userId"/>
                             <a :href="`${BASE_URL}/file/images/download/${item.filename}`"><span class="iconfont ai-xiazai" style="color: #fff"></span></a>
                             <el-divider direction="vertical" />
                             <span v-if="item.isLike" class="iconfont ai-like" style="color: #e6a23c;" @click="handleUnLike(item)"></span>

@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div v-else class="chat-list-user">
-                            <img src="/src/assets/images/ball.png" alt="">
+                            <img src="/src/assets/images/user.png" alt="">
                             <div>{{ item.content }}</div>
                         </div>
                     </div> 
@@ -77,7 +77,7 @@
                 <div class="note" v-else>
                     <el-scrollbar height="430px" >
                     <div class="note-content">
-                            {{ note }}
+                        {{ note }}
                     </div>
                     </el-scrollbar>
                    <div class="note-footer">
@@ -94,7 +94,8 @@ import { onMounted, ref, Ref, nextTick, computed } from 'vue'
 import router from '@/router/index.ts';
 import { fetchFileChatHistory, fetchNewChat, fetchChatNote, fetchUpdateChatNote } from '../../apis/file' ;
 import { ElMessage } from 'element-plus';
-import { useFileStore } from '../../store'
+import { useFileStore } from '../../store';
+import { BASE_URL } from '../../content/user'
 
 onMounted(() => {
     getChatFileHistory();
@@ -103,7 +104,7 @@ onMounted(() => {
 
 const fileStore = useFileStore();
 
-const src = `http://10.33.109.246:8088/file/files/${fileStore.selectFileInfo.depositFilename}`;
+const src = `${BASE_URL}/file/files/${fileStore.selectFileInfo.depositFilename}`;
 
 interface HISTORY {
     id: number;

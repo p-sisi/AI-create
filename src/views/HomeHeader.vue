@@ -3,6 +3,7 @@
         <div class="home-header-left">
             <img src="../assets/images/logo.png" alt="" class="left-img">
             <span>AI综合创作平台</span>
+            <!-- <img src="../assets/images/name.png" alt="" style="width: 300px"> -->
         </div>
         <div class="home-header-center">
             <div 
@@ -20,7 +21,7 @@
                 <div class="btn-login" @click="handleClickLoginIn()">Login in</div>
             </div>
             <div class="right-user" v-else>
-                <el-avatar size="40" :src="userUrl"/>
+                <el-avatar size="30" src="/src/assets/images/user.png"/>
                 <span>{{ commonStore.userInfo.nickname }}</span>
                 <span>|</span>
                 <span class="iconfont ai-loginOut" @click="loginOutdialogVisible = true"></span>
@@ -164,7 +165,10 @@ const inputPasswordLoginRef = ref(null);
 const activeMenu = ref('home');
 const clickMenu = (type: string) => {
     //未登录，拦截
-    if(!localStorage.getItem('Token')) return ElMessage.error('请先登录')
+    if(commonStore.hasLogin == false) {
+        dialogVisible.value = true;
+        return ElMessage.error('请先登录')
+    }
     if (activeMenu.value === type )  return 
     activeMenu.value = type;
     if(activeMenu.value === 'text') router.push('/ai_text/select')
@@ -312,9 +316,6 @@ const handleSendVerifyCode = async () => {
         isSendingCode.value = false;
     }
 }
-
-//用户信息
-const userUrl = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png')
 
 /**
  *  退出登录
