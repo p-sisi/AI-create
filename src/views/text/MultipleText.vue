@@ -258,8 +258,14 @@ const deleteChatRequest = async () => {
         })
         ElMessage.success('删除成功')
         deleteDialogVisible.value = false;
-        getAllChatList()
-        //TODO: 将当前激活的标题设为删除的下一个对话，如果当前激活的是当前删除的对话的话
+        getAllChatList();
+
+        //将当前激活的标题设为删除的下一个对话，如果当前激活的是当前删除的对话的话，且当前创作区变成上一个对话的历史记录
+        if(activeCollectRadio.value == selectChat.value.id) {
+            debugger
+            activeCollectRadio.value = chatList.value[chatList.value.length - 2].id
+        }
+        clickChat(chatList.value[chatList.value.length - 2])
     }catch (error: any) {
         ElMessage.error(error.message)
     }
