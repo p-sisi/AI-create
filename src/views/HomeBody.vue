@@ -25,20 +25,20 @@
             <el-divider style="margin-bottom: 40px;">We can do everything you want</el-divider>
         </div>
         <el-carousel
-                :interval=2000
-                type="card" 
-                height="400px"
-                pause-on-hover
+            :interval=2000
+            type="card" 
+            height="320px"
+            pause-on-hover
             >
-                <el-carousel-item>
-                    <img src="../assets/images/product1.jpg" alt="">
-                </el-carousel-item>
-                <el-carousel-item>
-                    <img src="../assets/images/product2.jpg" alt="">
-                </el-carousel-item>
-                <el-carousel-item>
-                    <img src="../assets/images/product3.jpg" alt="">
-                </el-carousel-item>
+            <el-carousel-item>
+                <img src="../assets/images/product1.jpg" alt="">
+            </el-carousel-item>
+            <el-carousel-item>
+                <img src="../assets/images/product2.jpg" alt="">
+            </el-carousel-item>
+            <el-carousel-item>
+                <img src="../assets/images/product3.jpg" alt="">
+            </el-carousel-item>
         </el-carousel>
         
         <!-- 下面三个优势点：中间一个球形的图标 -->
@@ -93,7 +93,7 @@
                 <div>降低你的AI使用门槛，发挥你的创作能力</div>
             </div>
         </div>
-        <div class="body-product">
+        <div class="body-product" ref="productRef">
             <div 
                 class="product" 
                 v-for="item in HOME_PRODUCT" 
@@ -113,9 +113,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
+        <!-- 回到顶部 -->
+        <el-backtop :right="100" :bottom="100">
+            <span class="iconfont ai-to-top" style="font-size: 20px; color: #b93bed"></span>
+        </el-backtop>
     </div>
 </template>
 
@@ -126,11 +129,9 @@ import lottie from 'lottie-web'
 import { HOME_PRODUCT }  from '../content'
 import router from '../router/index.ts';
 import { ElMessage } from "element-plus";
+import { useCommonStore } from '../store'
 
-// 多样性：创意无限，多种模式任你选！自由对话，模板填写，一切创作方式尽在掌握。
-// 高效性：捷高效，创作轻松完成！模板填写，文图互转，创意从未如此简单。
-// 创意性：激发灵感，创意互动！文本转图像，图像转文本，创意无边界。
-// 创作多元化：“文本、图像，一键切换，多元创作，无限可能！释放创意，打造个性作品。”
+const commonStore = useCommonStore();
 
 const animation1 = ref<any>(null)
 let timer2;
@@ -164,10 +165,14 @@ onMounted(() => {
 
 const activeTypeText = ref('');     //保存打字的文本
 
-// 开始体验
+const productRef = ref();
+
+    // 开始体验
 const handleStartCreate = () => {
-    //滚动到当前页面某个位置
-}
+    console.log('滚动')
+    console.log(productRef.value)
+    productRef.value.scrollIntoView({ behavior: 'smooth' });
+ };
 
 //鼠标移动触发事件
 const isShowButton = ref(false);
@@ -182,7 +187,9 @@ const hideButton = () => {
 }
 const StartToCreate = (item: any) => {
     //未登录，拦截
-    if(!localStorage.getItem('Token')) return ElMessage.error('请先登录')
+    if(commonStore.hasLogin == false) {
+        return ElMessage.error('请先登录')
+    }
     //清除
     //已登录，跳转
     if(item.id == 1) router.push('/ai_text/select')
