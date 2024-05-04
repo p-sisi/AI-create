@@ -31,13 +31,13 @@
                 pause-on-hover
             >
                 <el-carousel-item>
-                    <img src="../assets/images/select-bg.jpg" alt="">
+                    <img src="../assets/images/product1.jpg" alt="">
                 </el-carousel-item>
                 <el-carousel-item>
-                    <img src="../assets/images/select-bg.jpg" alt="">
+                    <img src="../assets/images/product2.jpg" alt="">
                 </el-carousel-item>
                 <el-carousel-item>
-                    <img src="../assets/images/select-bg.jpg" alt="">
+                    <img src="../assets/images/product3.jpg" alt="">
                 </el-carousel-item>
         </el-carousel>
         

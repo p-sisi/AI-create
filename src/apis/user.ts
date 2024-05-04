@@ -36,3 +36,10 @@ export function fetchLoginOut(params: any) {
 export function fetchSendVerifyCode(params: any) {
     return request.get('/user/sendEmailCode', params);
 }
+
+/**
+ *  修改用户昵称
+ */
+export function fetchUpdateUserName(params: any) {
+    return request.get('/user/updateUserInfo', params);
+}

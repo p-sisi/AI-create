@@ -17,7 +17,10 @@ export const useCommonStore = defineStore('common',{
         },
         setUserInfo(val: USER_INFO) {
             this.userInfo = val;
-        }
+        },
+        updateUserName(val: string) {
+            this.userInfo.nickname = val;
+        },
     },
     // 持久化配置
     persist: [   

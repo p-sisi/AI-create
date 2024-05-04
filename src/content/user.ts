@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://10.33.109.246:8088'
+export const BASE_URL = 'http://10.33.1.243:8088'
 
 //登录返回的用户信息接口
 export interface USER_INFO {

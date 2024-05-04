@@ -10,7 +10,7 @@
                 <div class="header-title">视觉魔法</div>
                 <div class="header-menu">
                     <div 
-                        v-for="item in ['创作区','创意星球','收藏夹']"  
+                        v-for="item in ['创作区','创意星球','我的']"  
                         @click="handleClickHeaderMenu(item)"
                         :class="{'isSelected': item === pictureStore.activeHeaderMenu}"
                     >{{ item }}</div>

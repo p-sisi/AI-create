@@ -2,17 +2,12 @@
     <div class="container">
         <!-- 左边对话管理 -->
         <div class="container-left">
-            <!-- 用户信息 -->
-            <div class="container-left-user">
-                <el-avatar src="/src/assets/images/user.png"/>
-                <div class="username">{{ commonStore.userInfo.nickname }}</div>
-                <div class="divide"></div>
-            </div>
-
             <!-- 新建对话 -->
             <el-button class="container-left-btn" @click="clickNewChat" color="#9c76f2">
                 <el-icon style="margin-right: 8px;" ><Plus /></el-icon>New&nbsp;Chat
             </el-button>
+
+            <div class="divide"></div>
 
             <!-- 对话列表 -->
             <el-scrollbar height="450px">
@@ -351,23 +346,13 @@ const sendQuestion = async() => {
         border-radius: 6px;
         background-color: #303032a4;
         overflow: hidden;
-        .container-left-user {
-            position: relative;
-            margin-bottom: 6px;
-            .username {
-                position: absolute;
-                font-size: 18px;
-                left: 50px;
-                top: 8px;
-            }
-            .divide {
-                height: 2px;
-                width: 100%;
-                text-align: center;
-                margin-bottom: 10px;
-                background-color: #fff;
-                opacity: 0.3;
-            }
+        .divide {
+            height: 2px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+            background-color: #fff;
+            opacity: 0.3;
         }
         .container-left-btn {
             width: 100%;

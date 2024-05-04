@@ -20,7 +20,7 @@
 
         <!-- 头部介绍区 -->
         <div class="introduce">
-            这里是一些介绍啥的，设计一下
+            
             <div>
                 
                 <el-button v-if="isShowUploadBtn == true" type="primary" @click="handleClick" color="#b73fed">上传文档</el-button>

@@ -21,7 +21,7 @@
                 <div class="btn-login" @click="handleClickLoginIn()">Login in</div>
             </div>
             <div class="right-user" v-else>
-                <el-avatar size="30" src="/src/assets/images/user.png"/>
+                <el-avatar size="30" src="/src/assets/images/user.png" @click="router.push('/user_info')"/>
                 <span>{{ commonStore.userInfo.nickname }}</span>
                 <span>|</span>
                 <span class="iconfont ai-loginOut" @click="loginOutdialogVisible = true"></span>

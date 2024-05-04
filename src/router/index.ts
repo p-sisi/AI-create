@@ -18,11 +18,18 @@ import Collect from '../views/text/TextCollect.vue'
 import FileHome from "../views/file/FileHome.vue";
 import FileCreate from "../views/file/FileCreate.vue";
 
+import UserCenter from '../views/UserCenter.vue'
+
 const routes = [
     {
         name: 'home',   
         path: '/home',  
         component:Home  
+    },
+    {   
+        name: 'user',   
+        path: '/user_info',  
+        component:  UserCenter,
     },
     {   //文本类
         name: 'text',   
