@@ -73,7 +73,6 @@
                 <!-- 对话记录 -->
                 <div class="list-container" v-else>
                     <div 
-                        ref="historyItemRef"
                         class="list"
                         v-for="item in chatHistory"
                         :key="item.id"
@@ -113,6 +112,7 @@
                             </div>
                         </div>
                     </div>
+                    <div ref="historyItemRef"></div>
                 </div> 
             </el-scrollbar>
 
@@ -184,6 +184,8 @@ const getAllChatList = async() => {
 
 const chatHistory = ref();      //对话的历史记录
 
+const historyItemRef = ref();   //历史记录item的ref
+
 /**
  *  点击对话列表
  */
@@ -201,7 +203,10 @@ const clickChat = async (item: any) => {
         const result = await fetchChatHistory({
             chatId: item.id
         })
-        chatHistory.value = result.data
+        chatHistory.value = result.data;
+        //等待DOM渲染之后，滚动到最底部
+        await nextTick();
+        historyItemRef.value.scrollIntoView({ behavior: 'smooth' });
     } catch (error: any) {
         ElMessage.error(error.message)
     }
@@ -301,6 +306,8 @@ const sendQuestion = async() => {
     isClickChat.value = true;
     //设置状态为生成中,非打字
     isGenerating.value = true;
+    await nextTick();
+    historyItemRef.value.scrollIntoView({ behavior: 'smooth' });
     isTyping.value = false;
 
     //发送提问请求，生成打字文本
@@ -327,6 +334,7 @@ const sendQuestion = async() => {
         const timer2 = setInterval(async () => {
             textStore.setActiveTypeTextMul(textStore.activeTypeTextMul + typeText.charAt(i));
             await nextTick();
+            historyItemRef.value.scrollIntoView({ behavior: 'smooth' });
             i++;
             if (i > typeText.length) {
                 //打字结束，设置打字状态为false，清除打字计时器
@@ -334,6 +342,7 @@ const sendQuestion = async() => {
                 //新的提问已经加入到历史记录里，需要把新的问题加入，并重新请求历史记录
                 chatHistory.value.push(result.data.answer)
                 clearInterval(timer2);
+                historyItemRef.value.scrollIntoView({ behavior: 'smooth' });
             }
         }, 20);//50:打字速度
     } catch (error: any) {  
