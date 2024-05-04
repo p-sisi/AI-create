@@ -1,10 +1,5 @@
 <template>
     <div class="container">
-       <div class="tips">
-            <span class="iconfont icon-pre_icon_xuanchuanwuliao"></span>
-            <div class="tips-top">历史生成记录最多可保存50条，遇到合适的答案可以点击“收藏”哦</div>
-            <div class="tips-bottom">本页面生成内容均由人工智能生成，无法保证其完整性和准确性，仅供参考借鉴。</div>
-       </div>
 
        <el-scrollbar max-height="465px">
        <div class="result">
@@ -93,6 +88,12 @@
             </el-skeleton>
        </div>
        </el-scrollbar>
+
+       <div class="tips">
+            <span class="iconfont icon-pre_icon_xuanchuanwuliao"></span>
+            <div class="tips-top">历史生成记录最多可保存50条，遇到合适的答案可以点击“收藏”哦</div>
+            <div class="tips-bottom">本页面生成内容均由人工智能生成，无法保证其完整性和准确性，仅供参考借鉴。</div>
+       </div>
     </div>
 </template>
 
@@ -225,7 +226,7 @@ onMounted(() => {
         color: #85888b;
         font-size: 12px;
         text-align: center;
-        margin-bottom: 10px;
+        margin-top: 25px;
         .iconfont {
             margin-left: -380px;
             color: #62effe;
@@ -237,11 +238,11 @@ onMounted(() => {
     .result {
         width: 100%;
         .result-dialogue {
-            width: 90%;
+            width: 97%;
             min-height: 100px;
             background: #212121;
             border-radius: 10px;
-            margin: 10px 20px;
+            margin: 0 10px 20px 10px;
             .dialogue-question {
                 display: flex;
                 gap: 6px;

@@ -20,7 +20,7 @@ export const CREATION_TEMPLATE = [
                 type: 'selectRadio',
                 placeholder: '请选择文章类型',
                 options: ['不限', '专业严谨', '轻松幽默', '文艺风','随笔'],
-                collectValue: '',
+                collectValue: '不限',
                 exampleValue: '不限',
             }
         ],

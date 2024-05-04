@@ -31,7 +31,6 @@ import TextCreateResult from './TextCreateResult.vue';
     }
     .body-result {
         width: 900px;
-        padding: 8px;
         border-radius: 10px;
     }
 }

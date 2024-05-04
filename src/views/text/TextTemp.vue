@@ -11,6 +11,7 @@
                     v-for="item in CREATION_TEMPLATE" 
                     :key="item.id" 
                     class="temp-list-body" 
+                    :class="{ 'selected': item.id === textStore.selectedTemp.id }"
                     @click="handleChangeTemp(item)"
                 >
                     <div class="image">
@@ -260,7 +261,7 @@ onMounted(() => {
     }
 }
 .header:hover {
-    color: #fff;
+    color: #bd70e6;
 }
 .temp {
     .temp-list {
@@ -299,6 +300,9 @@ onMounted(() => {
         }
         .temp-list-body:hover {
             background-color: #424345;
+        }
+        .selected {
+            border: 1px solid #bd70e6;
         }
     }
 
