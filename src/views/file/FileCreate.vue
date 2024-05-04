@@ -34,8 +34,14 @@
                     <div class="chat-list" v-for="item in chatHistoryShow" :key="item.id">
                         <div v-if="item.role =='assistant'" class="chat-list-assistant">
                             <img src="/src/assets/images/logo.png" alt="">
-                            <div style="display: flex;flex-direction: column;">
-                                <span>{{ item.content }}</span>
+                            <div style="flex:1;display: flex;flex-direction: column;">
+                                <span style="width: 99%;">
+                                    <v-md-editor 
+                                        v-model="item.content"    
+                                        :disabled-menus="[]"
+                                    >
+                                    </v-md-editor>
+                                </span>
                                 <div class="add-note" @click="addToNote(item)">
                                     <span class="iconfont ai-note"></span>
                                     添加到笔记
@@ -52,7 +58,13 @@
                         <img src="/src/assets/images/logo.png" alt="">
                         <div v-if="isGenerating || isTyping">
                             <el-skeleton :rows="3" animated v-if="isGenerating"/>
-                            <div  v-if="isTyping">{{ generateResult }}</div>
+                            <div v-if="isTyping">
+                                <v-md-editor 
+                                    v-model="generateResult"    
+                                    :disabled-menus="[]"
+                                >
+                                </v-md-editor>
+                            </div>
                         </div>
                     </div>
                     </el-scrollbar>
@@ -77,7 +89,10 @@
                 <div class="note" v-else>
                     <el-scrollbar height="430px" >
                     <div class="note-content">
-                        {{ note }}
+                        <v-md-editor 
+                            v-model="note"    
+                            :disabled-menus="[]"
+                        ></v-md-editor>
                     </div>
                     </el-scrollbar>
                    <div class="note-footer">
@@ -273,7 +288,7 @@ const generateResult = ref('');      //打字文本
     width: 100%;
     display: flex;
     .body-file {
-        width: 45%;
+        width: 40%;
         height: 100%;
         border-right: 1px solid #ccc;
         .body-file-iframe {
@@ -283,7 +298,7 @@ const generateResult = ref('');      //打字文本
         }
     }
     .body-chat {
-        width: 55%;
+        width: 60%;
         height: 100%;
         .body-chat-tabs {
             display: flex;
@@ -342,6 +357,24 @@ const generateResult = ref('');      //打字文本
                     background-color: #efecec6c;
                     border-radius: 8px;
                     padding: 10px 0;
+                }
+                //对话区的MarkDown样式
+                ::v-deep .v-md-editor {
+                    box-shadow:none;
+                }
+                ::v-deep .v-md-editor__toolbar{
+                    display: none;
+                }
+                ::v-deep .v-md-editor__editor-wrapper {
+                    display: none;
+                }
+                ::v-deep .vuepress-markdown-body:not(.custom) {
+                    padding: 4px;
+                }
+                ::v-deep .vuepress-markdown-body {
+                    font-size: 14px;
+                    color: black;
+                    background-color: #fff;
                 }
             }
             .chat-input {

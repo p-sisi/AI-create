@@ -279,6 +279,7 @@ const newChatId = ref();        //新对话的id
  *  发送问题：如果是新对话，需要先创建对话
  */
 const sendQuestion = async() => {
+    if(isGenerating.value == true || isTyping.value == true) return ElMessage.error('正在生成中，请稍后')
     if(inputQuestion.value == '') {
         inputQuestionRef.value.focus();
         return ElMessage.error('问题不能为空')
