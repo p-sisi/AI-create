@@ -29,7 +29,13 @@
                            <div class="create-skeleton" v-if="textStore.isCreating || textStore.isTyping">
                                 <el-skeleton :rows="3" animated  v-if="textStore.isCreating "/>
                                 <!-- 打字状态的文本generateResult -->
-                                <div v-if="textStore.isTyping == true">{{ generateResult }}</div>
+                                <div v-if="textStore.isTyping == true">
+                                    <v-md-editor 
+                                        v-model="generateResult"    
+                                        :disabled-menus="[]"
+                                    >
+                                    </v-md-editor>
+                                </div>
                            </div>
                         </div>
                     </div>
@@ -49,7 +55,13 @@
                                 <div>{{ item.modelTitle }}</div>
                             </el-tooltip>
                         </div>
-                        <div class="dialogue-answer">{{ item.answer }}</div>
+                        <div class="dialogue-answer">
+                            <v-md-editor 
+                                v-model="item.answer"    
+                                :disabled-menus="[]"
+                            >
+                            </v-md-editor>
+                        </div>
                         <div class="dialogue-footer">
                             <div>
                                 <span>生成&nbsp;{{ item?.answer.replace(/\s+/g, '').length }}&nbsp;字</span>
@@ -85,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { InfoFilled } from '@element-plus/icons-vue'
 import { BASE_URL } from '../../content/user'
@@ -114,8 +126,8 @@ const handleCopy = (text: string) => {
         .then(() => {
             ElMessage.success('复制成功！')
         })
-        .catch((error) => {
-            ElMessage.error('复制失败')
+        .catch((error: any) => {
+            ElMessage.error(error.message)
         })
 }
 
@@ -184,8 +196,6 @@ const handleCollect = async(item: any) => {
     }
 }
 
-const markdownText  = ref('```js //简单版 import Markdown from vue-meditor ```');        //markdown中文本
-
 onMounted(() => {
     setTimeout(() => {
         isLoading.value = false;
@@ -195,6 +205,21 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+//MarkDown样式
+::v-deep .v-md-editor__toolbar{
+    display: none;
+}
+::v-deep .v-md-editor__editor-wrapper {
+    display: none;
+}
+::v-deep .vuepress-markdown-body:not(.custom) {
+    padding: 4px;
+}
+::v-deep .vuepress-markdown-body {
+    font-size: 14px;
+    color: #fff;
+    background-color:#212121;
+}
 .container {
     .tips {
         color: #85888b;
@@ -261,12 +286,12 @@ onMounted(() => {
 }
 ::v-deep .el-skeleton {
     --el-skeleton-color: #0b0a0c93;
-    --el-skeleton-to-color: #0b0a0c31;
+    --el-skeleton-to-color: #212121;
 }
 .create-skeleton {
     ::v-deep .el-skeleton {
         --el-skeleton-color: #303032;
-        --el-skeleton-to-color: #3030328e;
+        --el-skeleton-to-color: #212121;
     }
 }
 </style>

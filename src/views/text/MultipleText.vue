@@ -85,7 +85,13 @@
                                 <span v-if="item.role =='assistant'" class="title-content">AI-Create</span>
                                 <span v-else class="title-content">You</span>
                             </span>
-                            <div class="list-item-content">{{ item.content }}</div>
+                            <div class="list-item-content">
+                                <v-md-editor 
+                                    v-model="item.content"    
+                                    :disabled-menus="[]"
+                                    >
+                                </v-md-editor>
+                            </div>
                         </div>
                     </div> 
                     <!-- 生成状态卡片 -->
@@ -97,7 +103,13 @@
                             </span>
                             <div v-if="isGenerating || isTyping">
                                 <el-skeleton class="list-item-content" :rows="3" animated v-if="isGenerating"/>
-                                <div class="list-item-content" v-if="isTyping">{{ generateResult }}</div>
+                                <div class="list-item-content" v-if="isTyping">
+                                    <v-md-editor 
+                                    v-model="generateResult"    
+                                    :disabled-menus="[]"
+                                    >
+                                    </v-md-editor>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -328,11 +340,23 @@ const sendQuestion = async() => {
     }
 }
 
-// MarkDown编辑器
-const markDownText = ref('**你好**')
 </script>
 
 <style scoped lang="scss">
+::v-deep .v-md-editor__toolbar{
+    display: none;
+}
+::v-deep .v-md-editor__editor-wrapper {
+    display: none;
+}
+::v-deep .vuepress-markdown-body:not(.custom) {
+    padding: 4px;
+}
+::v-deep .vuepress-markdown-body {
+    font-size: 14px;
+    color: #fff;
+    background:linear-gradient(to right, #0b0a0c, #161a1c);
+}
 .container {
     height: 90vh;
     width: 100%;

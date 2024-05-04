@@ -131,7 +131,7 @@ onMounted(() => {
     background-color: #303032;
 }
 .collect {
-    height: 90vh;
+    height: 82vh;
     width: 100%;
     display: flex;
     flex-flow: row wrap;
