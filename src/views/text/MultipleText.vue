@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, nextTick } from 'vue';
-import { useCommonStore, useTextStore } from '@/store';
+import { useTextStore } from '@/store';
 import { fetchChatList, fetchChatHistory, fetchDeleteChat, fetchNewChat, fetchChat } from '../../apis/multiple' 
 import { ElMessage } from 'element-plus';
 import { EditPen, Delete, Plus, DocumentCopy, MoreFilled} from '@element-plus/icons-vue';
@@ -152,7 +152,6 @@ onMounted(() => {
     getAllChatList()
 })
 
-const commonStore = useCommonStore();
 const textStore = useTextStore();
 
 const isClickChat = ref(false);     //是否点击了对话，没点击就展示提示语
@@ -328,6 +327,9 @@ const sendQuestion = async() => {
         ElMessage.error(error.message)
     }
 }
+
+// MarkDown编辑器
+const markDownText = ref('**你好**')
 </script>
 
 <style scoped lang="scss">

@@ -7,12 +7,17 @@
        <div class="collect-container" v-for="item in collectList" :key="item.id" v-else>
            <div class="title">
                 <img :src="`${BASE_URL}/file/images/${item.modelImg}`" alt="">
-                <div>{{ item.answer.slice(0,19) }}</div>
+                <div>{{ item.modelTitle }}</div>
            </div>
            <div class="divider"></div>
            <div class="content">
             <el-scrollbar max-height="290px" :min-size="10">
-                <div>{{ item.answer }}</div>
+                <v-md-editor 
+                    v-model="item.answer" 
+                    placeholder=" "    
+                    :disabled-menus="[]"
+                    >
+                </v-md-editor>
            </el-scrollbar>
            </div>
 
@@ -110,6 +115,21 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+//MarkDown样式
+::v-deep .v-md-editor__toolbar{
+    display: none;
+}
+::v-deep .v-md-editor__editor-wrapper {
+    display: none;
+}
+::v-deep .vuepress-markdown-body:not(.custom) {
+    padding: 4px;
+}
+::v-deep .vuepress-markdown-body {
+    font-size: 14px;
+    color: #e7e5e5;
+    background-color: #303032;
+}
 .collect {
     height: 90vh;
     width: 100%;
@@ -155,9 +175,7 @@ onMounted(() => {
             div {
                 width: 90%;
                 font-size: 14px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                font-weight: 600;
             }
         }
         .divider {
@@ -179,7 +197,7 @@ onMounted(() => {
             flex-flow: row nowrap;
             justify-content: space-between;
             padding: 0px 8px;
-            color: #ccc;
+            color: #999;
             font-size: 14px;
             &-time {
                 margin-top: 6px;
