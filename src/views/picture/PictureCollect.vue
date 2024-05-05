@@ -1,7 +1,24 @@
 <template>
     <div class="collect">
+        <!-- 左侧菜单栏 -->
+        <el-affix :offset="120">
+        <div class="tabs">
+            <div 
+                v-for="item in menuList" 
+                :key="item.label"
+                @click="radioChange(item.label)" 
+                class="tabs-temp" 
+                :class="{ 'selected': item.label === selectedMenu }"
+            >
+                <span :class="item.icon" class="iconfont"></span>
+                <div>{{ item.label }}</div>
+            </div>
+        </div>
+        </el-affix>
+
+        <!-- 收藏列表 -->
         <div class="container">
-            <div v-for="item in collectList" :key="item.id" class="item" @mouseenter="handleMouseEnter(item)">
+            <div v-for="item in List" :key="item.id" class="item" @mouseenter="handleMouseEnter(item)">
                 <img :src="`${BASE_URL}/file/images/${item.filename}`" alt="">
                 <div class="mask" v-if="isShowIcon && selectedImgId === item.id">
                     <el-popconfirm
@@ -53,6 +70,7 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref } from 'vue'
 import { fetchAllCollectImage, fetchCancelCollectImage } from '../../apis/picture'
+import { fetchMyShareList, fetchMyLikeList, fetchDeleteShare, fetchUnLikeShare } from '../../apis/share'
 import { fetchShare } from '../../apis/share'
 import { ElMessage } from 'element-plus';
 import { InfoFilled } from '@element-plus/icons-vue'
@@ -62,9 +80,46 @@ import router from '../../router/index.ts';
 
 onMounted(() => {
     getAllCollectRequest();
+    getAllShareRequest();
+    getAllLikeRequest();
 })
 
+const List = ref();     //展示的图片列表
+
 const collectList: Ref<COLLECT_LIST[]> = ref([]);      //收藏列表
+const shareList: Ref<COLLECT_LIST[]> = ref([]);      //分享列表
+const likeList: Ref<COLLECT_LIST[]> = ref([]);      //点赞列表
+
+//菜单栏
+const menuList = [
+    {
+        label: '收藏夹',
+        icon: 'ai-collect-all'
+    },
+    {
+        label: '我的点赞',
+        icon: 'ai-like'
+    },
+    {
+        label: '我的分享',
+        icon: 'ai-share-all'
+    }
+]
+const selectedMenu = ref('收藏夹') //默认选中
+const radioChange = (label: any) => {
+    //当重复点击时，取消选中
+    if (selectedMenu.value === label )  return 
+    selectedMenu.value = label;
+
+    if(label === '收藏夹') {
+        List.value = collectList.value;
+    } else if (label === '我的分享') {
+        List.value = shareList.value;
+    } else {
+        List.value = likeList.value;
+    }
+}
+
 
 /**
  *  获取所有图片的收藏
@@ -72,7 +127,33 @@ const collectList: Ref<COLLECT_LIST[]> = ref([]);      //收藏列表
 const getAllCollectRequest = async () => {
     try {
         const result = await fetchAllCollectImage();
-        collectList.value = result.data
+        collectList.value = result.data;
+        //首次加载，展示收藏列表
+        List.value = collectList.value;
+    } catch (error: any) {
+      ElMessage.error(error.message)  
+    }
+}
+
+/**
+ *  获取所有我的分享
+ */
+ const getAllShareRequest = async () => {
+    try {
+        const result = await fetchMyShareList();
+        shareList.value = result.data
+    } catch (error: any) {
+      ElMessage.error(error.message)  
+    }
+}
+
+/**
+ *  获取所有我的点赞
+ */
+ const getAllLikeRequest = async () => {
+    try {
+        const result = await fetchMyLikeList();
+        likeList.value = result.data
     } catch (error: any) {
       ElMessage.error(error.message)  
     }
@@ -88,14 +169,29 @@ const handleMouseEnter = (item: any) => {
 }
 
 /**
- * 删除一个收藏
+ * 点击图片的删除按钮
  * @param item : { id: number;title: string;filename: string; collectTime: string;}
  */
  const handleDelete = async(item: any) => {
     try {
-        await fetchCancelCollectImage({
-            imageName: item.name,
-        })
+        if(selectedMenu.value === '收藏夹'){
+            await fetchCancelCollectImage({
+                imageName: item.filename,
+            })
+            getAllCollectRequest();
+        }else if(selectedMenu.value === '我的分享'){
+            await fetchDeleteShare({
+                shareId: item.id
+            })
+            getAllShareRequest();
+            List.value = shareList.value;
+        } else {
+            await fetchUnLikeShare({
+                shareId: item.id
+            })
+            getAllLikeRequest();
+            List.value = likeList.value;
+        }
         return  ElMessage.success('删除成功');
     } catch (error: any) {
         ElMessage.error(error.message)
@@ -131,11 +227,31 @@ const handleShare = async() => {
 </script>
 
 <style scoped lang="scss">
+//菜单样式
+.tabs-temp {    //未选中时按钮样式
+    display: flex;
+    gap: 20px;
+    height: 40px;
+    padding: 2px 16px;
+    margin-right: 8px;
+    border-radius: 4px;
+    background-color: #212137;
+    font-size: 16px;
+    line-height: 40px;
+    cursor: pointer;
+}
+.tabs-temp.selected {     //选中时的样式
+    background: #e1c5f0;
+    color: #b641ee;
+}
+
 .container {
+    flex: 1;
     display: flex;
     flex-flow: column wrap;
-    height: 100vh; 
-    padding: 20px 180px;
+    align-content: flex-start;
+    height: 120vh; 
+    padding: 20px 20px;
     .item {
         margin: 10px;
         width: calc( 100%/4 - 10px);
@@ -166,7 +282,15 @@ const handleShare = async() => {
     }
 }
 .collect {
+    display: flex;
     background-color: #0e0e27;
     height: 200vh;
+    .tabs {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 10px;
+        padding-left: 20px;
+        width: 200px;
+    }
 }
 </style>

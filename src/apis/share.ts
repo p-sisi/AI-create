@@ -10,10 +10,17 @@ export function fetchShare(params: any) {
 }
 
 /**
- *  获取分享列表
+ *  获取全部分享列表
  */
 export function fetchShareList() {
     return request.get('/share/getAllShares');
+}
+
+/**
+ *  获取我的分享列表
+ */
+export function fetchMyShareList() {
+    return request.get('/share/getMyShares');
 }
 
 /**
@@ -21,6 +28,13 @@ export function fetchShareList() {
  */
 export function fetchDeleteShare(params: any) {
     return request.get('/share/delete',params);
+}
+
+/**
+ *  获取我的点赞列表
+ */
+export function fetchMyLikeList() {
+    return request.get('/share/getMyLikes');
 }
 
 /**

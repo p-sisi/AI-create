@@ -3,7 +3,7 @@
 import request from './request.ts';
 
 /**
- *  获取全部收藏列表
+ *  获取全部模板收藏列表
  */
 export function fetchCollectListText() {
     return request.get('/collect/getAllModelCollects');
