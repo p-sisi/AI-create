@@ -18,11 +18,11 @@
     <div class="center">
         <div class="image">
             <div class="img">
-                <el-avatar size="30" src="/src/assets/images/user.png"/>
+                <img src="/src/assets/images/user.png"/>
             </div>
             <div class="name">{{ commonStore.userInfo.nickname }}</div>
             <div style="display: flex;justify-content: center;margin-top: 20px">
-                <!-- <el-button type="success" >上传头像</el-button> -->
+                <el-button type="success" color="#b83ded">上传头像</el-button>
             </div>
         </div>
         <div class="info">
@@ -30,16 +30,16 @@
             <div style="font-weight: 600;">基本信息</div>
             <div class="info-basic">
                 <div>
-                    <span>姓名：</span>
+                    <span>昵称：</span>
                     <span v-if="!isEditName">{{ commonStore.userInfo.nickname }}</span>
                     <span v-else> <el-input v-model="editName" style="width: 240px"/></span>
-                    <span v-if="!isEditName" style="color: #4186ff;font-size: 12px;cursor: pointer;margin-left: 10px;" @click="handleClickEditName">编辑</span>
-                    <span v-else style="color: #4186ff;font-size: 12px;cursor: pointer;margin-left: 10px;" @click="handleEditName">保存</span>
+                    <span v-if="!isEditName" style="color:#b83ded;font-size: 12px;cursor: pointer;margin-left: 10px;" @click="handleClickEditName">编辑</span>
+                    <span v-else style="color:#b83ded;font-size: 12px;cursor: pointer;margin-left: 10px;" @click="handleEditName">保存</span>
                 </div>
                 <div>
                     <span>账号：</span>
                     <!-- <span>{{ commonStore.userInfo.account }}</span> -->
-                    <span>13878909929</span>
+                    <span>{{ commonStore.userInfo.account }}</span>
                 </div>
             </div>
             <!-- 安全设置 -->
@@ -67,7 +67,7 @@
                         <span><el-input v-model="inputNewPassword2" style="width: 300px;" placeholder="再次输入新密码" type="password"/></span>
                     </div>
                     <div class="edit-form-btn">
-                        <el-button type="primary" color="#4186ff" >修改</el-button>
+                        <el-button type="primary" color="#b83ded" >修改</el-button>
                         <el-button @click="isBindPhone = false">取消</el-button>
                     </div>
                 </div> -->
@@ -87,10 +87,10 @@
                     <div>
                         <span>&nbsp;&nbsp;验 证 码：</span>
                         <span><el-input v-model="inputCode" style="width: 200px;margin-right: 4px" placeholder="请输入验证码"/></span>
-                        <span><el-button style="width: 96px;" type="primary" color="#4186ff" @click="handleSendVerifyCode" :disabled="isSending">{{ !isSending ? '发送验证码': `(${sendTime}秒)`}}</el-button></span>
+                        <span><el-button style="width: 96px;" type="primary" color="#b83ded" @click="handleSendVerifyCode" :disabled="isSending">{{ !isSending ? '发送验证码': `(${sendTime}秒)`}}</el-button></span>
                     </div>
                     <div class="edit-form-btn">
-                        <el-button type="primary" color="#4186ff" @click="bindEmail">确定</el-button>
+                        <el-button type="primary" color="#b83ded" @click="bindEmail">确定</el-button>
                         <el-button @click="isBindEmail = false">取消</el-button>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
                         <span><el-input v-model="inputNewPassword2" style="width: 300px;" placeholder="再次输入新密码" type="password"/></span>
                     </div>
                     <div class="edit-form-btn">
-                        <el-button type="primary" color="#4186ff" @click="editPasswordByOld">修改</el-button>
+                        <el-button type="primary" color="#b83ded" @click="editPasswordByOld">修改</el-button>
                         <el-button @click="isEditPasswordOld = false">取消</el-button>
                     </div>
                 </div>
@@ -139,10 +139,10 @@
                     <div>
                         <span>&nbsp;&nbsp;验 证 码：</span>
                         <span><el-input v-model="inputCode" style="width: 200px;margin-right: 4px" placeholder="请输入验证码"/></span>
-                        <span><el-button style="width: 96px;" type="primary" color="#4186ff" @click="handleSendVerifyCode" :disabled="isSending">{{ !isSending ? '发送验证码': `(${sendTime}秒)`}}</el-button></span>
+                        <span><el-button style="width: 96px;" type="primary" color="#b83ded" @click="handleSendVerifyCode" :disabled="isSending">{{ !isSending ? '发送验证码': `(${sendTime}秒)`}}</el-button></span>
                     </div>
                     <div class="edit-form-btn">
-                        <el-button type="primary" color="#4186ff" @click="editPasswordByEmail">确定</el-button>
+                        <el-button type="primary" color="#b83ded" @click="editPasswordByEmail">确定</el-button>
                         <el-button @click="isEditPasswordEmail = false">取消</el-button>
                     </div>
                 </div>
@@ -494,7 +494,7 @@ const loginOutRequest = async() => {
             justify-content: center;
             margin-top: 20px;
             img {
-                width: 120px;
+                width: 80px;
                 border-radius: 50%;
             }
         }
@@ -508,6 +508,7 @@ const loginOutRequest = async() => {
     .info {
         flex:1;
         height: 80vh;
+        margin-left: 30px;
         border-radius: 8px;
         margin-bottom: 30px;
         .info-basic {
@@ -530,10 +531,10 @@ const loginOutRequest = async() => {
                     color: #999;
                 }
                 .btn {
-                    color: #4186ff;
+                    color: #b83ded;
                     font-size: 12px;
                     cursor: pointer;
-                    border-bottom: 1px solid #4186ff;
+                    border-bottom: 1px solid #b83ded;
                 }
             }
             .edit-form {

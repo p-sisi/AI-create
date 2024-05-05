@@ -56,8 +56,8 @@
                     <!-- 生成状态卡片 -->
                     <div class="chat-list" v-if="isGenerating || isTyping">
                         <img src="/src/assets/images/logo.png" alt="">
-                        <div v-if="isGenerating || isTyping">
-                            <el-skeleton :rows="3" animated v-if="isGenerating"/>
+                        <div v-if="isGenerating || isTyping" class="chat-skeleton">
+                            <el-skeleton :rows="3" animated v-if="isGenerating" />
                             <div v-if="isTyping">
                                 <v-md-editor 
                                     v-model="generateResult"    
@@ -67,6 +67,7 @@
                             </div>
                         </div>
                     </div>
+                    <div ref="emptyItemRef"></div>
                     </el-scrollbar>
 
                     <div class="chat-input">
@@ -121,6 +122,8 @@ const fileStore = useFileStore();
 
 const src = `${BASE_URL}/file/files/${fileStore.selectFileInfo.depositFilename}`;
 
+const emptyItemRef = ref();   //历史记录item的ref
+
 interface HISTORY {
     id: number;
     chatId: number;
@@ -148,6 +151,10 @@ const getChatFileHistory = async () => {
         //结果去掉第一个，因为第一个是文档解析内容
         chatHistory.value = result.data;
         chatHistoryDelete.value = chatHistory.value.shift();
+
+        //等待DOM渲染之后，滚动到最底部
+        await nextTick();
+        emptyItemRef.value.scrollIntoView({ behavior: 'smooth' });
     } catch (error: any) {
         ElMessage.error(error.message)
     }
@@ -233,7 +240,12 @@ const generateResult = ref('');      //打字文本
         //添加获取历史记录时去掉的第一个元素和用户输入的问题,展示的元素不需要添加
         chatHistory.value.unshift(chatHistoryDelete.value);
         chatHistory.value.push(newChat)
+
         const result = await fetchNewChat(chatHistory.value,+router.currentRoute.value.query.chatId );
+
+        //滚动到最底部
+        await nextTick();
+        emptyItemRef.value.scrollIntoView({ behavior: 'smooth' });
 
         inputQuestion.value = ''
         isGenerating.value = false;
@@ -246,6 +258,7 @@ const generateResult = ref('');      //打字文本
         const timer2 = setInterval(async () => {
             generateResult.value = generateResult.value + typeText.charAt(i);
             await nextTick();
+            emptyItemRef.value.scrollIntoView({ behavior: 'smooth' });
             i++;
             if (i > typeText.length) {
                 //打字结束，设置打字状态为false，清除打字计时器
@@ -254,6 +267,7 @@ const generateResult = ref('');      //打字文本
                 chatHistory.value.push(result.data.answer);
                 getChatFileHistory();
                 clearInterval(timer2);
+                emptyItemRef.value.scrollIntoView({ behavior: 'smooth' });
             }
         }, 20);//50:打字速度
     } catch (error: any) {  
@@ -322,6 +336,7 @@ const generateResult = ref('');      //打字文本
             padding: 20px;
             .chat_tips, .chat-list {
                 display: flex;
+                width: 100%;
                 align-items: flex-start;
                 gap: 10px;
                 font-size: 14px;
@@ -330,6 +345,9 @@ const generateResult = ref('');      //打字文本
                 img {
                     width: 40px;
                     height: 40px;
+                }
+                .chat-skeleton {
+                    flex:1;
                 }
             }
             .chat-list {
@@ -375,6 +393,28 @@ const generateResult = ref('');      //打字文本
                     font-size: 14px;
                     color: black;
                     background-color: #fff;
+                }
+                .gen-md {
+                    ::v-deep .v-md-editor {
+                        box-shadow:none;
+                    }
+                    ::v-deep .v-md-editor__toolbar{
+                        display: none;
+                    }
+                    ::v-deep .v-md-editor__editor-wrapper {
+                        display: none;
+                    }
+                    ::v-deep .vuepress-markdown-body:not(.custom) {
+                        padding: 4px;
+                    }
+                    ::v-deep .vuepress-markdown-body {
+                        font-size: 14px;
+                        color: black;
+                        background-color: #fff;
+                    }
+                    ::v-deep .v-md-editor__right-area {
+                        width: 100%;
+                    }
                 }
             }
             .chat-input {
@@ -429,5 +469,14 @@ const generateResult = ref('');      //打字文本
     }
 }
 
-
+::v-deep .el-skeleton {
+    --el-skeleton-color: #f0f2f5;
+    --el-skeleton-to-color:#e0e1e1;
+}
+.create-skeleton {
+    ::v-deep .el-skeleton {
+        --el-skeleton-color: #f0f2f5;
+        --el-skeleton-to-color: #e7e8ea;
+    }
+}
 </style>

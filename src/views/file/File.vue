@@ -11,6 +11,6 @@
 <style lang="scss" scoped>
 .file {
     height: 100vh;
-    background-color: #fbf8fc;
+    background-color: #fff;
 }
 </style>
