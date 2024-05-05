@@ -1,9 +1,9 @@
 <template>
     <div class="star">
         <div class="star-header">
-            <img src="../../assets/images/logo.png" alt="">
+            <img src="../../assets/images/home-bg2.png" alt="" class="header-img">
             <span style="margin-left: -200px;">
-                <span class="select-title">欢迎来到创意星球！</span>
+                <img src="/src/assets/images/picture-star.png" alt="" class="select-title">
                 <div>一个专为用户分享AI生成图片而设计的独特之地,用户能够展示他们的作品、与其他创作者互动，并从中获得灵感和喜悦。</div>
             </span>
             <div class="select-btn-temp" @click="handleClickToCreate">前往创作</div>
@@ -168,11 +168,15 @@ const handleClickToCreate = () => {
     justify-content: space-between;
     align-items: center;
     padding-right: 30px;
+    padding-left: 30px;
+    .header-img {
+        width: 120px;
+    }
     img {
         width: 100px;
     }
     .select-title {
-        font-size: 30px;
+        width: 400px;
     }
     .select-btn-temp {
         height: 26px;
