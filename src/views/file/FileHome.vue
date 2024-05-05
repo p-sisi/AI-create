@@ -20,11 +20,17 @@
 
         <!-- 头部介绍区 -->
         <div class="introduce">
-            
-            <div>
-                
-                <el-button v-if="isShowUploadBtn == true" type="primary" @click="handleClick" color="#b73fed">上传文档</el-button>
+            <div class="introduce-left">
+                <div class="title">
+                    <img src="/src/assets/images/file-title1.png" alt="">
+                    <div>文档创作</div>
+                </div>
+                <div class="desc">AI助您文档创作，效率倍增，让您的文档更具吸引力和专业性</div>
+                <el-button type="primary" @click="handleClick" color="#b73fed">立即体验</el-button>
             </div>
+           <div class="introduce-right">
+                <img src="/src/assets/images/file-bg.png" alt="">
+           </div>
         </div>
 
         <!-- 上传文档区 -->
@@ -59,6 +65,7 @@
             </div>
         </div>
         <!-- 文档历史记录区 -->
+        <div class="file-total">全部创作记录（{{ fileChatList.length }}&nbsp;条）</div>
         <div class="file-list">
             <div v-for="item in fileChatList" :key="item.id" class="file-list-item">
                 <div class="title"  @click="handleGoToCreate(item)">{{ item.title }}</div>
@@ -300,12 +307,51 @@ const handleCreate = async () => {
         }
     }
     .introduce {
+        display: flex;
+        justify-content: space-between;
         padding: 20px 40px;
+        padding-right: 120px;
+        padding-left: 80px;
+        margin: 10px 40px;
         color:#000000;
+        background-color: #f5ebf9;
+        border-radius: 40px;
+        .introduce-left{
+            .title {
+                display:flex;
+                align-items: center;
+                gap: 10px;
+                img {
+                    width: 100px;
+                    height: 26px;
+                }
+                div {
+                    font-weight: 600;
+                    font-size: 26px;
+                    width: 100%;
+                    background: linear-gradient(to right, #b73fed, #6adffd); /* 设置渐变背景 */
+                    -webkit-background-clip: text; /* 使背景仅在文字区域可见，适用于WebKit浏览器 */
+                    color: transparent; /* 使文字透明 */
+                    display: inline-block; /* 使渐变背景应用到文字 */
+                }
+            }
+            desc {
+                color: #000000b0;
+            }
+            .el-button {
+                margin-top: 10px;
+            }
+        }
+        .introduce-right {
+            img {
+                width: 180px;
+                height: 100px;
+            }
+        }
     }
     .upload-file {
         display: flex;
-        width: 80%;
+        width: 94%;
         margin: 0 auto;
         padding: 20px 40px;
         color: #000000;
@@ -369,6 +415,11 @@ const handleCreate = async () => {
             height: 100%;
             margin-left: 270px;
         }
+    }
+    .file-total {
+        margin-left: 60px;
+        margin-top: 10px;
+        color: #000;
     }
     .file-list {
         display: flex;
