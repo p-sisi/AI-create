@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 
-                <div class="header-use">
+                <div class="header-use" @click="router.push('/user_info')">
                     <el-avatar size="10" src="/src/assets/images/user.png"/>
                     <span>{{ commonStore.userInfo.nickname }}</span>
                     <span>|</span>
@@ -180,6 +180,7 @@ const loginOutRequest = async() => {
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
             .iconfont {
                 cursor: pointer;
             }

@@ -9,7 +9,7 @@
                     <img src="../../assets/images/logo.png" alt="" class="header-logo">
                     <div class="header-title">文档宝库</div>
                 </div>
-                <div class="header-use">
+                <div class="header-use" @click="router.push('/user_info')">
                     <el-avatar size="20" src="/src/assets/images/user.png"></el-avatar>
                     <span>{{ commonStore.userInfo.nickname }}</span>
                     <span>|</span>
@@ -298,6 +298,7 @@ const handleCreate = async () => {
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
             .iconfont {
                 cursor: pointer;
             }

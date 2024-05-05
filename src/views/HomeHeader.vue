@@ -364,6 +364,7 @@ const loginOutRequest = async() => {
     // 中间
     &-center {
         display: flex;
+        margin-left: -100px;
         gap: 20px;
         flex-flow: row nowrap;
         cursor: pointer;
@@ -407,6 +408,7 @@ const loginOutRequest = async() => {
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
             .iconfont {
                 cursor: pointer;
             }

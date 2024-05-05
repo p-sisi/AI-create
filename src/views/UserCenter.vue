@@ -3,9 +3,9 @@
     <div class="header">
         <div style="display: flex;align-items: center;gap: 10px;">
             <div class="back-to">
-                <span class="iconfont ai-back" @click="router.push('/home')"></span>
+                <span class="iconfont ai-back" @click="router.go(-1)"></span>
             </div>
-            <div class="header-title">返回首页</div>
+            <div class="header-title">返回</div>
         </div>
         <div class="header-use">
             <span>个人中心</span>
